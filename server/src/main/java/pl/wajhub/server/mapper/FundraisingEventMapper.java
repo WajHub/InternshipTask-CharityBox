@@ -6,7 +6,7 @@ import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
 import pl.wajhub.server.model.FundraisingEvent;
 
 @Mapper(componentModel = "spring")
-public interface AppMapper {
+public interface FundraisingEventMapper {
 
     FundraisingEvent eventDtoRequestToEvent(FundraisingEventDtoRequest eventDtoRequest);
 

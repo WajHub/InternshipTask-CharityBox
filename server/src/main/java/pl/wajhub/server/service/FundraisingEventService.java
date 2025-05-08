@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import pl.wajhub.server.dto.request.FundraisingEventDtoRequest;
 import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
-import pl.wajhub.server.mapper.AppMapper;
+import pl.wajhub.server.mapper.FundraisingEventMapper;
 import pl.wajhub.server.model.FundraisingEvent;
 import pl.wajhub.server.repository.FundraisingEventRepository;
 
@@ -13,17 +13,20 @@ import pl.wajhub.server.repository.FundraisingEventRepository;
 public class FundraisingEventService {
 
     private final FundraisingEventRepository eventRepository;
-    private final AppMapper mapper;
+    private final FundraisingEventMapper mapper;
 
     @Autowired
     public FundraisingEventService(
             FundraisingEventRepository eventRepository,
-            @Qualifier("appMapperImpl") AppMapper mapper) {
+            @Qualifier("fundraisingEventMapperImpl") FundraisingEventMapper mapper) {
         this.eventRepository = eventRepository;
         this.mapper = mapper;
     }
 
     public FundraisingEventDtoResponse create(FundraisingEventDtoRequest eventDtoRequest) {
+        if (eventDtoRequest.name() == null || eventDtoRequest.name().isEmpty())
+            throw new IllegalArgumentException("Event name must not be empty");
+
         FundraisingEvent event = eventRepository.save(
                 mapper.eventDtoRequestToEvent(eventDtoRequest)
         );

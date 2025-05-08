@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.wajhub.server.dto.request.FundraisingEventDtoRequest;
 import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
-import pl.wajhub.server.model.FundraisingEvent;
 import pl.wajhub.server.service.FundraisingEventService;
 
 @RestController
@@ -27,7 +26,7 @@ public class FundraisingEventController {
     public ResponseEntity<FundraisingEventDtoResponse> createEvent(
             @RequestBody FundraisingEventDtoRequest eventDtoRequest
     ){
-        if(eventDtoRequest.name().isEmpty())
+        if( eventDtoRequest == null || eventDtoRequest.name().isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");
         FundraisingEventDtoResponse event = eventService.create(eventDtoRequest);
         return new ResponseEntity<>(event, HttpStatus.CREATED);
