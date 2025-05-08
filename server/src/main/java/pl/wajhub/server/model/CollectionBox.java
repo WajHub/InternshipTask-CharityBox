@@ -20,7 +20,7 @@ public class CollectionBox {
     private UUID uuid;
 
     @ManyToOne
-    @JoinColumn(name = "event_uuid")
+    @JoinColumn(name = "event_uuid", nullable = false)
     private FundraisingEvent event;
 
     @OneToMany(mappedBy = "collectionBox")
