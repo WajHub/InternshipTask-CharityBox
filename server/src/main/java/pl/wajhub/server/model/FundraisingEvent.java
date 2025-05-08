@@ -19,7 +19,7 @@ public class FundraisingEvent {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @OneToMany(mappedBy = "event")
