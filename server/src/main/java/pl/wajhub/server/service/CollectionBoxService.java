@@ -3,9 +3,11 @@ package pl.wajhub.server.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
+import pl.wajhub.server.exception.CollectionBoxNotFoundException;
 import pl.wajhub.server.exception.EventNotFoundException;
 import pl.wajhub.server.mapper.CollectionBoxMapper;
 import pl.wajhub.server.model.CollectionBox;
+import pl.wajhub.server.model.FundraisingEvent;
 import pl.wajhub.server.repository.CollectionBoxRepository;
 import pl.wajhub.server.repository.FundraisingEventRepository;
 
@@ -41,15 +43,29 @@ public class CollectionBoxService {
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
     }
 
-    public CollectionBoxDtoResponse create(UUID event_uuid) {
+    public CollectionBoxDtoResponse create(UUID eventUuid) {
         return
             eventRepository
-            .findById(event_uuid)
+            .findById(eventUuid)
             .map((event) -> {
                 var collectionBox = CollectionBox.builder().event(event).build();
                 var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
                 return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
             })
-            .orElseThrow(() -> new EventNotFoundException(event_uuid));
+            .orElseThrow(() -> new EventNotFoundException(eventUuid));
+    }
+
+    public CollectionBoxDtoResponse register(UUID eventUuid, UUID collectionUuid) {
+        FundraisingEvent event = eventRepository.findById(eventUuid)
+                .orElseThrow(() -> new EventNotFoundException(eventUuid));
+
+        return collectionBoxRepository
+                .findById(collectionUuid)
+                .map((collectionBox) -> {
+                    collectionBox.setEvent(event);
+                    var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
+                    return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
+                })
+                .orElseThrow(() -> new CollectionBoxNotFoundException(collectionUuid));
     }
 }

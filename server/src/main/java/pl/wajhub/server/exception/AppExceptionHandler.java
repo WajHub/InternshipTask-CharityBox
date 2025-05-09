@@ -13,4 +13,9 @@ public class AppExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CollectionBoxNotFoundException.class)
+    public ResponseEntity<String> exceptionHandler(CollectionBoxNotFoundException ex){
+        return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
 }
