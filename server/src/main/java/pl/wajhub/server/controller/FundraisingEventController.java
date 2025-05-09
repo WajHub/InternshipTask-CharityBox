@@ -12,6 +12,7 @@ import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
 import pl.wajhub.server.model.MyCurrency;
 import pl.wajhub.server.service.FundraisingEventService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,6 +26,12 @@ public class FundraisingEventController {
         this.eventService = eventService;
     }
 
+    @GetMapping("/events")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<FundraisingEventDtoResponse>> getCollections(){
+        List<FundraisingEventDtoResponse> events = eventService.getAll();
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
 
     @PostMapping("/events")
     @ResponseStatus(HttpStatus.CREATED)

@@ -19,6 +19,7 @@ import pl.wajhub.server.repository.FundraisingEventRepository;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -39,6 +40,13 @@ public class FundraisingEventService {
         this.collectionBoxRepository = collectionBoxRepository;
         this.exchangeService = exchangeService;
         this.mapper = mapper;
+    }
+
+    public List<FundraisingEventDtoResponse> getAll() {
+        return eventRepository.findAll()
+                .stream()
+                .map(mapper::eventToEventDtoResponse)
+                .toList();
     }
 
     public FundraisingEventDtoResponse create(FundraisingEventDtoRequest eventDtoRequest) {
