@@ -8,7 +8,7 @@
     API_KEY=
     ```
 
-    >  **How to get API_KEY?** You can Generate api key here: [https://billing.currencyfreaks.com/](https://billing.currencyfreaks.com/)
+    >  **How to get API_KEY?** You can Generate api key here: [https://www.exchangerate-api.com/](https://www.exchangerate-api.com/)
 
 2. **Navigate to the main directory**
     ```bash
