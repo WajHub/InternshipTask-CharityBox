@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record CollectionBoxDtoResponse(UUID uuid) {
+public record CollectionBoxDtoResponse(UUID uuid, boolean isAssigned, boolean isEmpty) {
 }

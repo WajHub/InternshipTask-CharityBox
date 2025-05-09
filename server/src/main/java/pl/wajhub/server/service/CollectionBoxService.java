@@ -9,6 +9,7 @@ import pl.wajhub.server.model.CollectionBox;
 import pl.wajhub.server.repository.CollectionBoxRepository;
 import pl.wajhub.server.repository.FundraisingEventRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,6 +29,17 @@ public class CollectionBoxService {
         this.collectionBoxMapper = collectionBoxMapper;
     }
 
+    public List<CollectionBoxDtoResponse> getAll() {
+        return collectionBoxRepository.findAll()
+                    .stream()
+                    .map(collectionBoxMapper::collectionBoxToCollectionBoxDtoResponse)
+                    .toList();
+    }
+
+    public CollectionBoxDtoResponse create() {
+        var collectionBoxSaved = collectionBoxRepository.save(CollectionBox.builder().build());
+        return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
+    }
 
     public CollectionBoxDtoResponse create(UUID event_uuid) {
         return

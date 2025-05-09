@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
 import pl.wajhub.server.service.CollectionBoxService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,6 +21,19 @@ public class CollectionBoxController {
         this.collectionBoxService = collectionBoxService;
     }
 
+    @GetMapping("/collections")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<CollectionBoxDtoResponse>> getCollections(){
+        List<CollectionBoxDtoResponse> boxes = collectionBoxService.getAll();
+        return new ResponseEntity<>(boxes, HttpStatus.OK);
+    }
+
+    @PostMapping("/collections")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<CollectionBoxDtoResponse> createCollection(){
+        CollectionBoxDtoResponse collectionBox = collectionBoxService.create();
+        return new ResponseEntity<>(collectionBox, HttpStatus.CREATED);
+    }
 
     @PostMapping("/events/{uuid}/collections")
     @ResponseStatus(HttpStatus.CREATED)

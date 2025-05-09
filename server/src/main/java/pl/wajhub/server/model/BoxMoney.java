@@ -27,4 +27,5 @@ public class BoxMoney {
     @ManyToOne
     @JoinColumn(name = "collection_box_uuid")
     private CollectionBox collectionBox;
+
 }
