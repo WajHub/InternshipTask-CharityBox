@@ -18,4 +18,9 @@ public class AppExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(IncorrectMoneyValueException.class)
+    public ResponseEntity<String> exceptionHandler(IncorrectMoneyValueException ex){
+        return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
 }

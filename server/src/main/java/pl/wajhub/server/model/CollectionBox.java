@@ -3,8 +3,7 @@ package pl.wajhub.server.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Table
 @Entity
@@ -23,14 +22,18 @@ public class CollectionBox {
     @JoinColumn(name = "event_uuid")
     private FundraisingEvent event;
 
-    @OneToMany(mappedBy = "collectionBox", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<BoxMoney> boxMoneySet;
+    @ElementCollection
+    @CollectionTable(name = "box_balance_mapping",
+            joinColumns = {@JoinColumn(name = "box_id", referencedColumnName = "uuid")})
+    @MapKeyColumn(name = "currency")
+    @Column(name = "balance")
+    private Map<MyCurrency, Double> balance;
 
     public boolean isEmpty(){
-        if (boxMoneySet!=null){
-            var sum = boxMoneySet.stream()
-                        .mapToDouble(BoxMoney::getAmount)
-                        .sum();
+        if (balance!=null){
+            var sum = balance.values().stream()
+                    .mapToDouble(Double::valueOf)
+                    .sum();
             return (sum == 0);
         }
         return true;
