@@ -68,4 +68,16 @@ public class CollectionBoxService {
                 })
                 .orElseThrow(() -> new CollectionBoxNotFoundException(collectionUuid));
     }
+
+    public CollectionBoxDtoResponse unregister(UUID uuid) {
+        return collectionBoxRepository
+                .findById(uuid)
+                .map((collectionBox) -> {
+                    collectionBox.setEvent(null);
+                    collectionBox.setBoxMoneySet(null);
+                    var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
+                    return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
+                })
+                .orElseThrow(() -> new CollectionBoxNotFoundException(uuid));
+    }
 }

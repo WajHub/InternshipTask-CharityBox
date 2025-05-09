@@ -23,7 +23,7 @@ public class CollectionBox {
     @JoinColumn(name = "event_uuid")
     private FundraisingEvent event;
 
-    @OneToMany(mappedBy = "collectionBox")
+    @OneToMany(mappedBy = "collectionBox", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<BoxMoney> boxMoneySet;
 
     public boolean isEmpty(){
