@@ -22,9 +22,13 @@ public class FundraisingEvent {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "event")
-    private Set<Account> accountSet;
+    @Column(nullable = false)
+    private MyCurrency currency;
 
-    @OneToMany(mappedBy = "event")
+    @Builder.Default
+    @Column(nullable = false)
+    private Double amount = 0.0;
+
+    @OneToMany(mappedBy = "event", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Set<CollectionBox> collectionBoxSet;
 }
