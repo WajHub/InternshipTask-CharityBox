@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.wajhub.server.dto.request.FundraisingEventDtoRequest;
 import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
 import pl.wajhub.server.exception.CollectionBoxNotFoundException;
+import pl.wajhub.server.exception.EventDuplicateNameException;
 import pl.wajhub.server.exception.EventNotFoundException;
 import pl.wajhub.server.mapper.FundraisingEventMapper;
 import pl.wajhub.server.model.FundraisingEvent;
@@ -49,6 +50,8 @@ public class FundraisingEventService {
     public FundraisingEventDtoResponse create(@Valid FundraisingEventDtoRequest eventDtoRequest) {
         if (eventDtoRequest.name() == null || eventDtoRequest.name().isEmpty())
             throw new IllegalArgumentException("Event name must not be empty");
+        if(eventRepository.findByName(eventDtoRequest.name()).isPresent())
+            throw new EventDuplicateNameException(eventDtoRequest.name());
         var event =  mapper.eventDtoRequestToEvent(eventDtoRequest);
         var eventSaved = eventRepository.save(event);
         return mapper.eventToEventDtoResponse(eventSaved);
@@ -57,6 +60,8 @@ public class FundraisingEventService {
     public FundraisingEventDtoResponse create(@Valid FundraisingEventDtoRequest eventDtoRequest, UUID uuid) {
         if (eventDtoRequest.name() == null || eventDtoRequest.name().isEmpty())
             throw new IllegalArgumentException("Event name must not be empty");
+        if(eventRepository.findByName(eventDtoRequest.name()).isPresent())
+            throw new EventDuplicateNameException(eventDtoRequest.name());
         var eventOptional = eventRepository.findById(uuid);
         if (eventOptional.isPresent())
             return mapper.eventToEventDtoResponse(eventOptional.get());
