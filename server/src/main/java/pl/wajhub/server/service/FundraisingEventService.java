@@ -16,6 +16,7 @@ import pl.wajhub.server.repository.CollectionBoxRepository;
 import pl.wajhub.server.repository.FundraisingEventRepository;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -81,6 +82,7 @@ public class FundraisingEventService {
             .forEach((currency, balance )->
                     handleTransferMoney(currency, balance, event)
             );
+        collectionBox.setBalance(new HashMap<>());
         return mapper.eventToEventDtoResponse(event);
     }
 
