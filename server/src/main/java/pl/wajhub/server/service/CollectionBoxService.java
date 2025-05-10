@@ -43,10 +43,7 @@ public class CollectionBoxService {
     }
 
     public CollectionBoxDtoResponse create() {
-        var collection =
-            CollectionBox.builder()
-                    .balance(new HashMap<>())
-            .build();
+        var collection = CollectionBox.builder().build();
         var collectionBoxSaved = collectionBoxRepository.save(collection);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
     }
@@ -57,7 +54,6 @@ public class CollectionBoxService {
             return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxOptional.get());
         var collection = CollectionBox.builder()
                         .uuid(uuid)
-                        .balance(new HashMap<>())
                         .build();
         var collectionBoxSaved = collectionBoxRepository.save(collection);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
