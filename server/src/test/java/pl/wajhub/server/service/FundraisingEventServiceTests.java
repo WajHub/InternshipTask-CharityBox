@@ -15,6 +15,7 @@ import pl.wajhub.server.model.FundraisingEvent;
 import pl.wajhub.server.repository.CollectionBoxRepository;
 import pl.wajhub.server.repository.FundraisingEventRepository;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,6 +33,9 @@ class FundraisingEventServiceTests {
 
     @Mock
     private FundraisingEventMapper eventMapper;
+
+    @Mock
+    private ExchangeService exchangeService;
 
     @InjectMocks
     private FundraisingEventService eventService;
@@ -141,5 +145,101 @@ class FundraisingEventServiceTests {
         eventService.transfer(event.getUuid(), collectionBox.getUuid());
 
         assertNotEquals(100.0, event.getAmount());
+    }
+
+    @Test
+    public void transferDifferentCurrencySuccessfullyTest() throws IOException {
+        double startAmount = 1.1;
+        double amount = 250.0;
+        double standardRate = 4.2;
+        String destinationCurrencyCode = "PLN";
+        String sourceCurrencyCode = "EUR";
+        FundraisingEvent event = FundraisingEvent.builder()
+                .uuid(UUID.randomUUID())
+                .name("Test")
+                .amount(startAmount)
+                .currencyCode(destinationCurrencyCode)
+                .build();
+        CollectionBox collectionBox = CollectionBox.builder()
+                .uuid(UUID.randomUUID())
+                .balance(new HashMap<>() {{
+                    put(sourceCurrencyCode,amount);
+                }})
+                .build();
+
+        Mockito.when(eventRepository.findById(event.getUuid()))
+                .thenReturn(Optional.of(event));
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
+                .thenReturn(Optional.of(collectionBox));
+        Mockito.when(exchangeService.getRate(sourceCurrencyCode, destinationCurrencyCode)).thenReturn(standardRate);
+
+        eventService.transfer(event.getUuid(), collectionBox.getUuid());
+
+        assertEquals(startAmount+amount*standardRate, event.getAmount());
+    }
+
+    @Test
+    public void emptyCollectionBoxAfterTransferSuccessfullyTest() throws IOException {
+        double amount = 250.0;
+        String destinationCurrencyCode = "PLN";
+        String sourceCurrencyCode = "EUR";
+        FundraisingEvent event = FundraisingEvent.builder()
+                .uuid(UUID.randomUUID())
+                .name("Test")
+                .currencyCode(destinationCurrencyCode)
+                .build();
+        CollectionBox collectionBox = CollectionBox.builder()
+                .uuid(UUID.randomUUID())
+                .balance(new HashMap<>() {{
+                    put(sourceCurrencyCode,amount);
+                    put(destinationCurrencyCode, amount);
+                }})
+                .build();
+
+        Mockito.when(eventRepository.findById(event.getUuid()))
+                .thenReturn(Optional.of(event));
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
+                .thenReturn(Optional.of(collectionBox));
+        Mockito.when(exchangeService.getRate(sourceCurrencyCode, destinationCurrencyCode)).thenReturn(4.2);
+
+        eventService.transfer(event.getUuid(), collectionBox.getUuid());
+        double sumBalanceCollectionBox =
+                collectionBox.getBalance().values()
+                .stream()
+                .mapToDouble(d-> d).sum();
+
+        assertEquals(0.0, sumBalanceCollectionBox);
+    }
+
+    @Test
+    public void transferDifferentCurrenciesSuccessfullyTest() throws IOException {
+        double amount = 250.0;
+        double startAmount = 10.0;
+        double standardRate = 4.2;
+        String destinationCurrencyCode = "PLN";
+        String sourceCurrencyCode = "EUR";
+        FundraisingEvent event = FundraisingEvent.builder()
+                .uuid(UUID.randomUUID())
+                .name("Test")
+                .amount(startAmount)
+                .currencyCode(destinationCurrencyCode)
+                .build();
+        CollectionBox collectionBox = CollectionBox.builder()
+                .uuid(UUID.randomUUID())
+                .balance(new HashMap<>() {{
+                    put(sourceCurrencyCode,amount);
+                    put(destinationCurrencyCode, amount);
+                }})
+                .build();
+
+        Mockito.when(eventRepository.findById(event.getUuid()))
+                .thenReturn(Optional.of(event));
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
+                .thenReturn(Optional.of(collectionBox));
+        Mockito.when(exchangeService.getRate(sourceCurrencyCode, destinationCurrencyCode)).thenReturn(standardRate);
+
+        eventService.transfer(event.getUuid(), collectionBox.getUuid());
+
+        assertEquals(startAmount+amount+amount*standardRate, event.getAmount());
     }
 }
