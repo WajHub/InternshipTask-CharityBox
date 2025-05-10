@@ -20,3 +20,23 @@
     ```bash
     docker compose up --build
     ```
+   
+## Database Schema
+
+```mermaid
+   erDiagram
+   
+       fundraising_event {
+           uuid id PK
+           String name
+           String currencyCode "Consistent with ISO 4217"
+           double balance
+       }
+   
+       collection_box{
+           uuid id PK
+           Map_CurrencyCode_Double money "CurrencyCode - consistent with ISO 4217"
+       }
+   
+       fundraising_event ||--o{ collection_box: ""
+```
