@@ -7,20 +7,18 @@ import okhttp3.Response;
 import org.springframework.stereotype.Service;
 import org.json.JSONObject;
 import pl.wajhub.server.model.MyCurrency;
-
 import java.io.IOException;
 
 
 @Service
 public class ExchangeService {
 
-    private String baseUrl;
-    private String apiKey;
+    private final String url;
 
     public ExchangeService() {
         Dotenv dotenv = Dotenv.load();
-        apiKey = dotenv.get("API_KEY");
-        baseUrl = "https://api.currencyfreaks.com/v2.0/convert/latest?apikey="+apiKey + "&from=USD&to=PKR&amount=500";
+        String apiKey = dotenv.get("API_KEY");
+        url = "https://v6.exchangerate-api.com/v6/"+ apiKey +"/latest/";
     }
 
     public Double exchange(
@@ -30,7 +28,7 @@ public class ExchangeService {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("https://v6.exchangerate-api.com/v6/"+apiKey+ "/latest/"+sourceCurrency)
+                .url(url+sourceCurrency)
                 .get()
                 .build();
         Response response = client.newCall(request).execute();
