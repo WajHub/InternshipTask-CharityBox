@@ -92,8 +92,8 @@ public class FundraisingEventService {
             return ;
         }
         try {
-            Double value = exchangeService.exchange(currencyCode, event.getCurrencyCode(), balance);
-            event.setAmount(event.getAmount()+value);
+            Double rate = exchangeService.getRate(currencyCode, event.getCurrencyCode());
+            event.setAmount(event.getAmount()+rate*balance);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
