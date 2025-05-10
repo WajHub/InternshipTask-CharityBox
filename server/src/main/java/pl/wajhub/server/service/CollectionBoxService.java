@@ -37,38 +37,37 @@ public class CollectionBoxService {
     }
 
     public List<CollectionBoxDtoResponse> getAll() {
-        return collectionBoxRepository.findAll()
-                    .stream()
-                    .map(collectionBoxMapper::collectionBoxToCollectionBoxDtoResponse)
-                    .toList();
+        return
+            collectionBoxRepository.findAll().stream()
+                .map(collectionBoxMapper::collectionBoxToCollectionBoxDtoResponse)
+            .toList();
     }
 
     public CollectionBoxDtoResponse create() {
-        var collectionBoxSaved = collectionBoxRepository.save(CollectionBox
-                .builder()
-                        .balance(new HashMap<>(){{
-                            put(MyCurrency.EUR, 0.0);
-                            put(MyCurrency.USD, 0.0);
-                            put(MyCurrency.PLN, 0.0);
-                        }})
-                .build()
-        );
+        var collection =
+            CollectionBox.builder()
+                .balance(new HashMap<>(){{
+                    put(MyCurrency.EUR, 0.0);
+                    put(MyCurrency.USD, 0.0);
+                    put(MyCurrency.PLN, 0.0);
+                }})
+            .build();
+        var collectionBoxSaved = collectionBoxRepository.save(collection);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
     }
 
     public CollectionBoxDtoResponse create(UUID eventUuid) {
         return
-            eventRepository
-            .findById(eventUuid)
+            eventRepository.findById(eventUuid)
             .map((event) -> {
                 var collectionBox = CollectionBox.builder()
-                        .balance(new HashMap<>(){{
-                            put(MyCurrency.EUR, 0.0);
-                            put(MyCurrency.USD, 0.0);
-                            put(MyCurrency.PLN, 0.0);
-                        }})
-                        .event(event)
-                        .build();
+                    .balance(new HashMap<>(){{
+                        put(MyCurrency.EUR, 0.0);
+                        put(MyCurrency.USD, 0.0);
+                        put(MyCurrency.PLN, 0.0);
+                    }})
+                    .event(event)
+                    .build();
                 var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
                 return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
             })
@@ -79,44 +78,44 @@ public class CollectionBoxService {
         FundraisingEvent event = eventRepository.findById(eventUuid)
                 .orElseThrow(() -> new EventNotFoundException(eventUuid));
 
-        return collectionBoxRepository
-                .findById(collectionUuid)
-                .map((collectionBox) -> {
-                    collectionBox.setEvent(event);
-                    var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
-                    return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
-                })
-                .orElseThrow(() -> new CollectionBoxNotFoundException(collectionUuid));
+        return
+            collectionBoxRepository.findById(collectionUuid)
+            .map((collectionBox) -> {
+                collectionBox.setEvent(event);
+                var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
+                return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
+            })
+            .orElseThrow(() -> new CollectionBoxNotFoundException(collectionUuid));
     }
 
     public CollectionBoxDtoResponse unregister(UUID uuid) {
-        return collectionBoxRepository
-                .findById(uuid)
-                .map((collectionBox) -> {
-                    collectionBox.setEvent(null);
-                    collectionBox.getBalance()
-                            .replaceAll((k, v) -> 0.0);
-                    var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
-                    return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
-                })
-                .orElseThrow(() -> new CollectionBoxNotFoundException(uuid));
+        return
+            collectionBoxRepository.findById(uuid)
+            .map((collectionBox) -> {
+                collectionBox.setEvent(null);
+                collectionBox.getBalance()
+                        .replaceAll((k, v) -> 0.0);
+                var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
+                return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
+            })
+            .orElseThrow(() -> new CollectionBoxNotFoundException(uuid));
     }
 
     @Transactional
-    public CollectionBoxDtoResponse transfer(UUID uuid, TransferMoneyToCollectionBoxRequest money) {
+    public CollectionBoxDtoResponse transfer(
+            UUID uuid,
+            TransferMoneyToCollectionBoxRequest money) {
         if(money.amount()<=0.0)
             throw new IncorrectMoneyValueException(money.amount());
-        else{
-            return
-                collectionBoxRepository
-                    .findById(uuid)
-                    .map((collectionBox) -> {
-                        Double value = collectionBox.getBalance().get(money.currency());
-                        collectionBox.getBalance().replace(money.currency(), money.amount()+value);
-                        var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
-                        return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
-                    })
-                    .orElseThrow(() -> new CollectionBoxNotFoundException(uuid));
-        }
+
+        return
+            collectionBoxRepository.findById(uuid)
+            .map((collectionBox) -> {
+                Double value = collectionBox.getBalance().get(money.currency());
+                collectionBox.getBalance().replace(money.currency(), money.amount()+value);
+                var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
+                return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
+            })
+            .orElseThrow(() -> new CollectionBoxNotFoundException(uuid));
     }
 }

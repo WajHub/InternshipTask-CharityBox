@@ -43,7 +43,7 @@ public class CollectionBoxController {
         return new ResponseEntity<>(collectionBox, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/events/{eventUuid}/collections/{collectionUuid}")
+    @PatchMapping("/events/{eventUuid}/collections/{collectionUuid}/register")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CollectionBoxDtoResponse> registerCollection(
             @PathVariable UUID eventUuid,
