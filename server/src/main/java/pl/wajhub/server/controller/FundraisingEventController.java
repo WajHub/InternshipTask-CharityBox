@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.wajhub.server.dto.request.FundraisingEventDtoRequest;
-import pl.wajhub.server.dto.request.TransferMoneyToCollectionBoxRequest;
-import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
 import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
-import pl.wajhub.server.model.MyCurrency;
 import pl.wajhub.server.service.FundraisingEventService;
 
 import java.util.List;
