@@ -1,7 +1,9 @@
 package pl.wajhub.server.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
+import pl.wajhub.server.validation.CurrencyCodeConstraint;
 
 import java.util.Set;
 import java.util.UUID;
@@ -23,7 +25,9 @@ public class FundraisingEvent {
     private String name;
 
     @Column(nullable = false)
-    private MyCurrency currency;
+    @CurrencyCodeConstraint
+    @Schema(name = "Currency", example = "USD|EUR|PLN", description = "Currency code according to ISO 4217")
+    private String currencyCode;
 
     @Builder.Default
     @Column(nullable = false)

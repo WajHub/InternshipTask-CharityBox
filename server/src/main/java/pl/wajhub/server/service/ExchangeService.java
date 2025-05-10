@@ -6,7 +6,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.stereotype.Service;
 import org.json.JSONObject;
-import pl.wajhub.server.model.MyCurrency;
 import java.io.IOException;
 
 
@@ -22,19 +21,19 @@ public class ExchangeService {
     }
 
     public Double exchange(
-            MyCurrency sourceCurrency,
-            MyCurrency destinationCurrency,
+            String sourceCurrencyCode,
+            String destinationCurrencyCode,
             Double amount) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url(url+sourceCurrency)
+                .url(url+sourceCurrencyCode)
                 .get()
                 .build();
         Response response = client.newCall(request).execute();
         JSONObject root = new JSONObject(response.body().string());
         JSONObject rates = root.getJSONObject("conversion_rates");
-        Double rate = rates.getDouble(destinationCurrency.toString());
+        Double rate = rates.getDouble(destinationCurrencyCode);
         return rate*amount;
     }
 }

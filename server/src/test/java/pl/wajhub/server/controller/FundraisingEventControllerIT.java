@@ -2,16 +2,12 @@ package pl.wajhub.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.wajhub.server.dto.request.FundraisingEventDtoRequest;
-import pl.wajhub.server.mapper.FundraisingEventMapper;
-import pl.wajhub.server.model.MyCurrency;
 import pl.wajhub.server.service.FundraisingEventService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,7 +26,7 @@ class FundraisingEventControllerIT {
 
     @Test
     void createEvent() throws Exception {
-        FundraisingEventDtoRequest eventDtoRequest = new FundraisingEventDtoRequest("Charity Event", MyCurrency.PLN);
+        FundraisingEventDtoRequest eventDtoRequest = new FundraisingEventDtoRequest("Charity Event", "PLN");
 
         String requestBody = objectMapper.writeValueAsString(eventDtoRequest);
 
@@ -42,7 +38,7 @@ class FundraisingEventControllerIT {
 
     @Test
     void createEventEmptyName() throws Exception {
-        FundraisingEventDtoRequest eventDtoRequest = new FundraisingEventDtoRequest("", MyCurrency.PLN);
+        FundraisingEventDtoRequest eventDtoRequest = new FundraisingEventDtoRequest("","PLN");
 
         String requestBody = objectMapper.writeValueAsString(eventDtoRequest);
 

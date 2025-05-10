@@ -10,7 +10,6 @@ import pl.wajhub.server.exception.CollectionBoxNotFoundException;
 import pl.wajhub.server.exception.EventNotFoundException;
 import pl.wajhub.server.mapper.FundraisingEventMapper;
 import pl.wajhub.server.model.FundraisingEvent;
-import pl.wajhub.server.model.MyCurrency;
 import pl.wajhub.server.repository.CollectionBoxRepository;
 import pl.wajhub.server.repository.FundraisingEventRepository;
 
@@ -68,13 +67,13 @@ public class FundraisingEventService {
         return mapper.eventToEventDtoResponse(event);
     }
 
-    private void handleTransferMoney(MyCurrency currency, Double balance, FundraisingEvent event) {
-        if(Objects.equals(currency, event.getCurrency())) {
+    private void handleTransferMoney(String currencyCode, Double balance, FundraisingEvent event) {
+        if(Objects.equals(currencyCode, event.getCurrencyCode())) {
             event.setAmount(event.getAmount() + balance);
             return ;
         }
         try {
-            Double value = exchangeService.exchange(currency, event.getCurrency(), balance);
+            Double value = exchangeService.exchange(currencyCode, event.getCurrencyCode(), balance);
             event.setAmount(event.getAmount()+value);
         } catch (IOException e) {
             throw new RuntimeException(e);

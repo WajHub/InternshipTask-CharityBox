@@ -1,8 +1,8 @@
 package pl.wajhub.server.dto.request;
 
 import lombok.Builder;
-import pl.wajhub.server.model.MyCurrency;
+import pl.wajhub.server.validation.CurrencyCodeConstraint;
 
 @Builder
-public record FundraisingEventDtoRequest(String name, MyCurrency currency) {
+public record FundraisingEventDtoRequest(String name, @CurrencyCodeConstraint String currencyCode) {
 }

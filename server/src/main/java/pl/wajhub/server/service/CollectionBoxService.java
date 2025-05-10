@@ -11,7 +11,6 @@ import pl.wajhub.server.exception.IncorrectMoneyValueException;
 import pl.wajhub.server.mapper.CollectionBoxMapper;
 import pl.wajhub.server.model.CollectionBox;
 import pl.wajhub.server.model.FundraisingEvent;
-import pl.wajhub.server.model.MyCurrency;
 import pl.wajhub.server.repository.CollectionBoxRepository;
 import pl.wajhub.server.repository.FundraisingEventRepository;
 
@@ -46,11 +45,6 @@ public class CollectionBoxService {
     public CollectionBoxDtoResponse create() {
         var collection =
             CollectionBox.builder()
-                .balance(new HashMap<>(){{
-                    put(MyCurrency.EUR, 0.0);
-                    put(MyCurrency.USD, 0.0);
-                    put(MyCurrency.PLN, 0.0);
-                }})
             .build();
         var collectionBoxSaved = collectionBoxRepository.save(collection);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
@@ -61,11 +55,6 @@ public class CollectionBoxService {
             eventRepository.findById(eventUuid)
             .map((event) -> {
                 var collectionBox = CollectionBox.builder()
-                    .balance(new HashMap<>(){{
-                        put(MyCurrency.EUR, 0.0);
-                        put(MyCurrency.USD, 0.0);
-                        put(MyCurrency.PLN, 0.0);
-                    }})
                     .event(event)
                     .build();
                 var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
@@ -111,8 +100,8 @@ public class CollectionBoxService {
         return
             collectionBoxRepository.findById(uuid)
             .map((collectionBox) -> {
-                Double value = collectionBox.getBalance().get(money.currency());
-                collectionBox.getBalance().replace(money.currency(), money.amount()+value);
+                Double value = collectionBox.getBalance().get(money.currencyCode());
+                collectionBox.getBalance().replace(money.currencyCode(), money.amount()+value);
                 var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
                 return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
             })

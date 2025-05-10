@@ -27,7 +27,7 @@ public class CollectionBox {
             joinColumns = {@JoinColumn(name = "box_id", referencedColumnName = "uuid")})
     @MapKeyColumn(name = "currency")
     @Column(name = "balance")
-    private Map<MyCurrency, Double> balance;
+    private Map<String, Double> balance = new HashMap<>();
 
     public boolean isEmpty(){
         if (balance!=null){
