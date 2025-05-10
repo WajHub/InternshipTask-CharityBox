@@ -45,22 +45,22 @@ public class CollectionBoxService {
     public CollectionBoxDtoResponse create() {
         var collection =
             CollectionBox.builder()
+                    .balance(new HashMap<>())
             .build();
         var collectionBoxSaved = collectionBoxRepository.save(collection);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
     }
 
-    public CollectionBoxDtoResponse create(UUID eventUuid) {
-        return
-            eventRepository.findById(eventUuid)
-            .map((event) -> {
-                var collectionBox = CollectionBox.builder()
-                    .event(event)
-                    .build();
-                var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
-                return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
-            })
-            .orElseThrow(() -> new EventNotFoundException(eventUuid));
+    public CollectionBoxDtoResponse create(UUID uuid) {
+        var collectionBoxOptional = collectionBoxRepository.findById(uuid);
+        if (collectionBoxOptional.isPresent())
+            return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxOptional.get());
+        var collection = CollectionBox.builder()
+                        .uuid(uuid)
+                        .balance(new HashMap<>())
+                        .build();
+        var collectionBoxSaved = collectionBoxRepository.save(collection);
+        return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
     }
 
     public CollectionBoxDtoResponse register(UUID eventUuid, UUID collectionUuid) {

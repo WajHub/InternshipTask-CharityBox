@@ -54,6 +54,17 @@ public class FundraisingEventService {
         return mapper.eventToEventDtoResponse(eventSaved);
     }
 
+    public FundraisingEventDtoResponse create(@Valid FundraisingEventDtoRequest eventDtoRequest, UUID uuid) {
+        if (eventDtoRequest.name() == null || eventDtoRequest.name().isEmpty())
+            throw new IllegalArgumentException("Event name must not be empty");
+        var eventOptional = eventRepository.findById(uuid);
+        if (eventOptional.isPresent())
+            return mapper.eventToEventDtoResponse(eventOptional.get());
+        var event =  mapper.eventDtoRequestToEvent(eventDtoRequest);
+        var eventSaved = eventRepository.save(event);
+        return mapper.eventToEventDtoResponse(eventSaved);
+    }
+
     @Transactional
     public FundraisingEventDtoResponse transfer(UUID eventUuid, UUID collectionUuid) {
         var event = eventRepository.findById(eventUuid)
@@ -80,5 +91,4 @@ public class FundraisingEventService {
             throw new RuntimeException(e);
         }
     }
-
 }

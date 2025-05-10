@@ -36,9 +36,11 @@ public class CollectionBoxController {
         return new ResponseEntity<>(collectionBox, HttpStatus.CREATED);
     }
 
-    @PostMapping("/events/{uuid}/collections")
+    @PutMapping("/collections/{uuid}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CollectionBoxDtoResponse> createCollection(@PathVariable UUID uuid){
+    public ResponseEntity<CollectionBoxDtoResponse> createCollection(
+            @PathVariable UUID uuid
+    ){
         CollectionBoxDtoResponse collectionBox = collectionBoxService.create(uuid);
         return new ResponseEntity<>(collectionBox, HttpStatus.CREATED);
     }

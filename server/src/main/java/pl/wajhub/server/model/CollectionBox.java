@@ -22,7 +22,7 @@ public class CollectionBox {
     @JoinColumn(name = "event_uuid")
     private FundraisingEvent event;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "box_balance_mapping",
             joinColumns = {@JoinColumn(name = "box_id", referencedColumnName = "uuid")})
     @MapKeyColumn(name = "currency")

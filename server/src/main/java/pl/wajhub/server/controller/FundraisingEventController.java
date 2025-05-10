@@ -43,6 +43,18 @@ public class FundraisingEventController {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
+    @PostMapping("/events/{uuid}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<FundraisingEventDtoResponse> createEvent(
+            @Valid @RequestBody FundraisingEventDtoRequest eventDtoRequest,
+            @PathVariable UUID uuid
+    ){
+        if( eventDtoRequest == null || eventDtoRequest.name().isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");
+        FundraisingEventDtoResponse event = eventService.create(eventDtoRequest, uuid);
+        return new ResponseEntity<>(event, HttpStatus.CREATED);
+    }
+
     @PatchMapping("events/{eventUuid}/collections/{collectionUuid}/transfer")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<FundraisingEventDtoResponse> transferMoney(
