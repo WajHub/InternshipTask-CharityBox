@@ -20,6 +20,7 @@ import pl.wajhub.server.repository.FundraisingEventRepository;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -43,47 +44,45 @@ public class FundraisingEventService {
     }
 
     public List<FundraisingEventDtoResponse> getAll() {
-        return eventRepository.findAll()
-                .stream()
-                .map(mapper::eventToEventDtoResponse)
-                .toList();
+        return
+            eventRepository.findAll().stream()
+            .map(mapper::eventToEventDtoResponse)
+            .toList();
     }
 
     public FundraisingEventDtoResponse create(FundraisingEventDtoRequest eventDtoRequest) {
         if (eventDtoRequest.name() == null || eventDtoRequest.name().isEmpty())
             throw new IllegalArgumentException("Event name must not be empty");
-
-        var event = eventRepository.save(
-                mapper.eventDtoRequestToEvent(eventDtoRequest)
-        );
-        return mapper.eventToEventDtoResponse(event);
+        var event =  mapper.eventDtoRequestToEvent(eventDtoRequest);
+        var eventSaved = eventRepository.save(event);
+        return mapper.eventToEventDtoResponse(eventSaved);
     }
 
     @Transactional
     public FundraisingEventDtoResponse transfer(UUID eventUuid, UUID collectionUuid) {
         var event = eventRepository.findById(eventUuid)
                 .orElseThrow(() -> new EventNotFoundException(eventUuid));
-
         var collectionBox = collectionBoxRepository.findById(collectionUuid)
                 .orElseThrow(() -> new CollectionBoxNotFoundException(collectionUuid));
+
         collectionBox.getBalance()
-                .forEach((currency, balance )-> {
-                    if(currency.equals(event.getCurrency())){
-                        event.setAmount(
-                                event.getAmount()+balance
-                        );
-                    }
-                    else{
-                        try {
-                            Double value = exchangeService.exchange(currency, event.getCurrency(), balance);
-                            event.setAmount(
-                                    event.getAmount()+value
-                            );
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+            .forEach((currency, balance )->
+                    handleTransferMoney(currency, balance, event)
+            );
         return mapper.eventToEventDtoResponse(event);
     }
+
+    private void handleTransferMoney(MyCurrency currency, Double balance, FundraisingEvent event) {
+        if(Objects.equals(currency, event.getCurrency())) {
+            event.setAmount(event.getAmount() + balance);
+            return ;
+        }
+        try {
+            Double value = exchangeService.exchange(currency, event.getCurrency(), balance);
+            event.setAmount(event.getAmount()+value);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

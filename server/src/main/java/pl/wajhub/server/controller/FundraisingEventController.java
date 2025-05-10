@@ -22,7 +22,8 @@ public class FundraisingEventController {
     private final FundraisingEventService eventService;
 
     @Autowired
-    public FundraisingEventController(FundraisingEventService eventService) {
+    public FundraisingEventController(
+            FundraisingEventService eventService) {
         this.eventService = eventService;
     }
 
