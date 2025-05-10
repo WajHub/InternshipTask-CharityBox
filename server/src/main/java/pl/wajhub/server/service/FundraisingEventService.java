@@ -1,5 +1,6 @@
 package pl.wajhub.server.service;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class FundraisingEventService {
             .toList();
     }
 
-    public FundraisingEventDtoResponse create(FundraisingEventDtoRequest eventDtoRequest) {
+    public FundraisingEventDtoResponse create(@Valid FundraisingEventDtoRequest eventDtoRequest) {
         if (eventDtoRequest.name() == null || eventDtoRequest.name().isEmpty())
             throw new IllegalArgumentException("Event name must not be empty");
         var event =  mapper.eventDtoRequestToEvent(eventDtoRequest);

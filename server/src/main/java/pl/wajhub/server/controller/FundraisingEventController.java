@@ -1,5 +1,6 @@
 package pl.wajhub.server.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class FundraisingEventController {
     @PostMapping("/events")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<FundraisingEventDtoResponse> createEvent(
-            @RequestBody FundraisingEventDtoRequest eventDtoRequest
+            @Valid @RequestBody FundraisingEventDtoRequest eventDtoRequest
     ){
         if( eventDtoRequest == null || eventDtoRequest.name().isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");

@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record FundraisingEventDtoResponse(UUID uuid, String name, String currency, Double amount) {
+public record FundraisingEventDtoResponse(UUID uuid, String name, String currencyCode, Double amount) {
 }
