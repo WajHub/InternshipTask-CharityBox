@@ -26,7 +26,7 @@ public class FundraisingEvent {
 
     @Column(nullable = false)
     @CurrencyCodeConstraint
-    @Schema(name = "Currency", example = "USD|EUR|PLN", description = "Currency code according to ISO 4217")
+    @Schema(name = "CurrencyCode", example = "PLN", description = "Currency code according to ISO 4217")
     private String currencyCode;
 
     @Builder.Default
