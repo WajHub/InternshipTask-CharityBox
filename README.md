@@ -24,19 +24,27 @@
 ## Database Schema
 
 ```mermaid
-   erDiagram
+  erDiagram
    
-       fundraising_event {
-           uuid id PK
-           String name
-           String currencyCode "Consistent with ISO 4217"
-           double balance
+       FUNDRAISING_EVENT {
+            UUID id PK
+            String name
+            String currency_code "Consistent with ISO 4217"
+            double balance
        }
    
-       collection_box{
-           uuid id PK
-           Map_CurrencyCode_Double money "CurrencyCode - consistent with ISO 4217"
+       COLLECTION_BOX{
+            UUID id PK
+            UUID event_id FK
+            Map_CurrencyCode_Double money "CurrencyCode - consistent with ISO 4217"
+       }
+
+       BOX_BALANCE_MAPPING{
+            UUID box_id FK
+            string currency_code
+            double balance
        }
    
-       fundraising_event ||--o{ collection_box: ""
+        FUNDRAISING_EVENT ||--o{ COLLECTION_BOX : contains
+        COLLECTION_BOX ||--o{ BOX_BALANCE_MAPPING : has
 ```

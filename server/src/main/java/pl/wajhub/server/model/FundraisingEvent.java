@@ -26,12 +26,12 @@ public class FundraisingEvent {
 
     @Column(nullable = false)
     @CurrencyCodeConstraint
-    @Schema(name = "CurrencyCode", example = "PLN", description = "Currency code according to ISO 4217")
+    @Schema(name = "Currency_code", example = "PLN", description = "Currency code according to ISO 4217")
     private String currencyCode;
 
     @Builder.Default
     @Column(nullable = false)
-    private Double amount = 0.0;
+    private Double balance = 0.0;
 
     @OneToMany(mappedBy = "event", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Set<CollectionBox> collectionBoxSet;

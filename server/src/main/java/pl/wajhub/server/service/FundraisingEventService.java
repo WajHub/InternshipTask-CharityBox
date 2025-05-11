@@ -88,12 +88,12 @@ public class FundraisingEventService {
 
     private void handleTransferMoney(String currencyCode, Double balance, FundraisingEvent event) {
         if(Objects.equals(currencyCode, event.getCurrencyCode())) {
-            event.setAmount(event.getAmount() + balance);
+            event.setBalance(event.getBalance() + balance);
             return ;
         }
         try {
             Double rate = exchangeService.getRate(currencyCode, event.getCurrencyCode());
-            event.setAmount(event.getAmount()+rate*balance);
+            event.setBalance(event.getBalance()+rate*balance);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -25,7 +25,7 @@ public class CollectionBox {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "box_balance_mapping",
             joinColumns = {@JoinColumn(name = "box_id", referencedColumnName = "uuid")})
-    @MapKeyColumn(name = "currency")
+    @MapKeyColumn(name = "currency_code")
     @Column(name = "balance")
     private Map<String, Double> balance = new HashMap<>();
 
