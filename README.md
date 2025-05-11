@@ -36,7 +36,6 @@
        COLLECTION_BOX{
             UUID id PK
             UUID event_id FK
-            Map_CurrencyCode_Double money "CurrencyCode - consistent with ISO 4217"
        }
 
        BOX_BALANCE_MAPPING{
