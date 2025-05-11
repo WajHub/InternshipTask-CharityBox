@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.wajhub.server.dto.request.TransferMoneyToCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
+import pl.wajhub.server.exception.CollectionBoxIsNotEmptyException;
 import pl.wajhub.server.exception.CollectionBoxNotFoundException;
 import pl.wajhub.server.exception.EventNotFoundException;
 import pl.wajhub.server.exception.IncorrectMoneyValueException;
@@ -67,6 +68,8 @@ public class CollectionBoxService {
         CollectionBox collectionBox =
                 collectionBoxRepository.findById(collectionUuid)
                 .orElseThrow(() -> new CollectionBoxNotFoundException(collectionUuid));
+        if(!collectionBox.isEmpty())
+            throw new CollectionBoxIsNotEmptyException();
         collectionBox.setEvent(event);
         collectionBoxRepository.save(collectionBox);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox);
@@ -77,7 +80,7 @@ public class CollectionBoxService {
                 collectionBoxRepository.findById(uuid)
                 .orElseThrow(() -> new CollectionBoxNotFoundException(uuid));
         collectionBox.setEvent(null);
-        collectionBox.getBalance().replaceAll((k, v) -> 0.0);
+        collectionBox.setBalance(new HashMap<>());
         collectionBoxRepository.save(collectionBox);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox);
     }

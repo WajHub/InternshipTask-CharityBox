@@ -36,6 +36,11 @@ public class AppExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CollectionBoxIsNotEmptyException.class)
+    public ResponseEntity<String> exceptionHandler(CollectionBoxIsNotEmptyException ex) {
+        return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
         String errors = ex.getBindingResult().getFieldErrors().stream()

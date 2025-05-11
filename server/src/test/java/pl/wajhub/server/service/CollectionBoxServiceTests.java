@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.wajhub.server.dto.request.TransferMoneyToCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
+import pl.wajhub.server.exception.CollectionBoxIsNotEmptyException;
 import pl.wajhub.server.exception.CollectionBoxNotFoundException;
 import pl.wajhub.server.exception.EventNotFoundException;
 import pl.wajhub.server.mapper.CollectionBoxMapper;
@@ -112,10 +113,21 @@ class CollectionBoxServiceTests {
     @Test
     void register_SuccessfullyRegisteredCollectionBoxToEvent_RegisterExistingBoxToExistingEvent(){
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
-
         Mockito.when(eventRepository.findById(event.getUuid())).thenReturn(Optional.of(event));
 
         collectionBoxService.register(event.getUuid(),collectionBox.getUuid());
+    }
+
+    @Test
+    void register_UnsuccessfullyRegisterNotEmptyCollectionBox_NotEmptyCollectionBox(){
+        collectionBox.setBalance(new HashMap<>(){{put("PLN", 10.0);}});
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
+        Mockito.when(eventRepository.findById(event.getUuid())).thenReturn(Optional.of(event));
+
+        assertThrows(
+                CollectionBoxIsNotEmptyException.class,
+                () -> collectionBoxService.register(event.getUuid(), collectionBox.getUuid())
+        );
     }
 
     @Test
@@ -143,14 +155,19 @@ class CollectionBoxServiceTests {
                 .balance(new HashMap<>(){{put("PLN",10.0);}})
                 .build();
         collectionBox.setEvent(event);
-        TransferMoneyToCollectionBoxRequest request =
-                TransferMoneyToCollectionBoxRequest.builder()
-                        .amount(10.0)
-                        .currencyCode("PLN")
-                .build();
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
         collectionBoxService.unregister(collectionBox.getUuid());
 
-        assertNull(collectionBox.getEvent());
+        double sumBalanceCollectionBox =
+                collectionBox.getBalance().values()
+                        .stream()
+                        .mapToDouble(d-> d).sum();
+        assertEquals(0.0, sumBalanceCollectionBox);
+    }
+
+    @Test
+    void transfer_SuccessfullyTransfer_NewCurrencyInBox(){
+        collectionBox.setEvent(event);
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
     }
 }
