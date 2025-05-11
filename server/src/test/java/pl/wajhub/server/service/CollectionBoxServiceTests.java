@@ -1,12 +1,15 @@
 package pl.wajhub.server.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.wajhub.server.dto.request.TransferMoneyToCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
+import pl.wajhub.server.exception.CollectionBoxNotFoundException;
 import pl.wajhub.server.exception.EventNotFoundException;
 import pl.wajhub.server.mapper.CollectionBoxMapper;
 import pl.wajhub.server.model.CollectionBox;
@@ -14,9 +17,11 @@ import pl.wajhub.server.model.FundraisingEvent;
 import pl.wajhub.server.repository.CollectionBoxRepository;
 import pl.wajhub.server.repository.FundraisingEventRepository;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
+import static javax.swing.UIManager.put;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,52 +29,128 @@ class CollectionBoxServiceTests {
 
     @Mock
     private FundraisingEventRepository eventRepository;
-
     @Mock
     private CollectionBoxRepository collectionBoxRepository;
-
     @Mock
     private  CollectionBoxMapper collectionBoxMapper;
-
     @InjectMocks
     private CollectionBoxService collectionBoxService;
 
+    private FundraisingEvent event;
+    private CollectionBox collectionBox;
+    private CollectionBoxDtoResponse collectionBoxDtoResponse;
+
+    @BeforeEach
+    public void init(){
+        event = FundraisingEvent.builder()
+                    .uuid(UUID.randomUUID())
+                    .name("Charity One")
+                    .currencyCode("PLN")
+                .build();
+        collectionBox = CollectionBox.builder()
+                    .uuid(UUID.randomUUID())
+                    .balance(new HashMap<>())
+                .build();
+        collectionBoxDtoResponse = CollectionBoxDtoResponse.builder()
+                    .uuid(collectionBox.getUuid())
+                .build();
+    }
+
     @Test
-    void createSuccessfullyTest() {
-        UUID uuid = UUID.randomUUID();
-        FundraisingEvent event = FundraisingEvent.builder()
-                .uuid(uuid)
-                .name("NAME")
-                .build();
+    void create_SuccessfullyCreated_NewCollectionBox() {
+        Mockito.when(collectionBoxRepository.save(Mockito.any(CollectionBox.class))).thenReturn(collectionBox);
+        Mockito.when(collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox)).thenReturn(collectionBoxDtoResponse);
 
-        CollectionBox savedBox = CollectionBox.builder()
-                .uuid(UUID.randomUUID())
-                .event(event)
-                .build();
-
-        CollectionBoxDtoResponse dtoResponse = CollectionBoxDtoResponse.builder()
-                .uuid(savedBox.getUuid())
-                .build();
-
-        Mockito.when(eventRepository.findById(uuid)).thenReturn(Optional.of(event));
-        Mockito.when(collectionBoxRepository.save(Mockito.any())).thenReturn(savedBox);
-        Mockito.when(collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(savedBox)).thenReturn(dtoResponse);
-
-        CollectionBoxDtoResponse result = collectionBoxService.create(uuid);
+        CollectionBoxDtoResponse result = collectionBoxService.create();
 
         assertNotNull(result);
-        assertEquals(savedBox.getUuid(), result.uuid());
+        assertEquals(collectionBox.getUuid(), result.uuid());
     }
 
     @Test
-    void createThrowsEventNotFoundExceptionWhenEventDoesNotExist() {
-        UUID uuid = UUID.randomUUID();
+    void create_SuccessfullyCreated_NewCollectionBoxWithUuid(){
+        Mockito.when(collectionBoxRepository.save(Mockito.any(CollectionBox.class))).thenReturn(collectionBox);
+        Mockito.when(collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox)).thenReturn(collectionBoxDtoResponse);
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.empty());
 
-        Mockito.when(eventRepository.findById(uuid)).thenReturn(Optional.empty());
+        CollectionBoxDtoResponse result = collectionBoxService.create(collectionBox.getUuid());
 
-        assertThrows(EventNotFoundException.class, () -> collectionBoxService.create(uuid));
+        assertEquals(collectionBox.getUuid(), result.uuid());
+        assertNotNull(result);
     }
 
+    @Test
+    void create_ReturnExistingObject_NewCollectionBoxWithExistingUuid(){
+        Mockito.when(collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox)).thenReturn(collectionBoxDtoResponse);
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
 
+        CollectionBoxDtoResponse result = collectionBoxService.create(collectionBox.getUuid());
 
+        assertEquals(collectionBox.getUuid(), result.uuid());
+        assertNotNull(result);
+    }
+
+    @Test
+    void register_ThrowEventNotFoundException_RegisterToNotExistingEvent(){
+        UUID randomUuid = UUID.randomUUID();
+        Mockito.when(eventRepository.findById(randomUuid)).thenReturn(Optional.empty());
+
+        assertThrows(EventNotFoundException.class,
+                ()-> collectionBoxService.register(randomUuid, collectionBox.getUuid()));
+    }
+
+    @Test
+    void register_ThrowCollectionBoxNotFoundException_RegisterNotExistingCollectionBox(){
+        UUID randomUuid = UUID.randomUUID();
+        Mockito.when(eventRepository.findById(event.getUuid())).thenReturn(Optional.of(event));
+        Mockito.when(collectionBoxRepository.findById(randomUuid)).thenReturn(Optional.empty());
+
+        assertThrows(CollectionBoxNotFoundException.class,
+                ()-> collectionBoxService.register(event.getUuid(), randomUuid));
+    }
+
+    @Test
+    void register_SuccessfullyRegisteredCollectionBoxToEvent_RegisterExistingBoxToExistingEvent(){
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
+
+        Mockito.when(eventRepository.findById(event.getUuid())).thenReturn(Optional.of(event));
+
+        collectionBoxService.register(event.getUuid(),collectionBox.getUuid());
+    }
+
+    @Test
+    void unregister_ThrowCollectionBoxNotFoundException_UnregisterNotExistingCollectionBox(){
+        UUID randomUuid = UUID.randomUUID();
+        Mockito.when(collectionBoxRepository.findById(randomUuid)).thenReturn(Optional.empty());
+
+        assertThrows(CollectionBoxNotFoundException.class,
+                ()-> collectionBoxService.unregister(randomUuid));
+    }
+
+    @Test
+    void unregister_SuccessfullyUnregisterCollectionBox_UnregisterExistingBox(){
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
+        collectionBox.setEvent(event);
+        collectionBoxService.unregister(collectionBox.getUuid());
+
+        assertNull(collectionBox.getEvent());
+    }
+
+    @Test
+    void unregister_SuccessfullyEmptiedCollectionBox_UnregisterExistingBox(){
+        CollectionBox collectionBox = CollectionBox.builder()
+                .event(event)
+                .balance(new HashMap<>(){{put("PLN",10.0);}})
+                .build();
+        collectionBox.setEvent(event);
+        TransferMoneyToCollectionBoxRequest request =
+                TransferMoneyToCollectionBoxRequest.builder()
+                        .amount(10.0)
+                        .currencyCode("PLN")
+                .build();
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
+        collectionBoxService.unregister(collectionBox.getUuid());
+
+        assertNull(collectionBox.getEvent());
+    }
 }
