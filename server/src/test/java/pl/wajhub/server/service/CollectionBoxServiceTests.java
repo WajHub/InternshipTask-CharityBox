@@ -12,6 +12,7 @@ import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
 import pl.wajhub.server.exception.CollectionBoxIsNotEmptyException;
 import pl.wajhub.server.exception.CollectionBoxNotFoundException;
 import pl.wajhub.server.exception.EventNotFoundException;
+import pl.wajhub.server.exception.IncorrectMoneyValueException;
 import pl.wajhub.server.mapper.CollectionBoxMapper;
 import pl.wajhub.server.model.CollectionBox;
 import pl.wajhub.server.model.FundraisingEvent;
@@ -22,7 +23,6 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
-import static javax.swing.UIManager.put;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -169,5 +169,94 @@ class CollectionBoxServiceTests {
     void transfer_SuccessfullyTransfer_NewCurrencyInBox(){
         collectionBox.setEvent(event);
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
+        TransferMoneyToCollectionBoxRequest request =
+                TransferMoneyToCollectionBoxRequest.builder()
+                        .currencyCode("PLN")
+                        .amount(10.0)
+                    .build();
+
+        collectionBoxService.transfer(collectionBox.getUuid(), request);
+
+        assertEquals(
+                request.amount(),
+                collectionBox.getBalance().get(request.currencyCode())
+        );
+    }
+
+    @Test
+    void transfer_SuccessfullyTransfer_ExistingCurrencyInBox() {
+        Double amountInBoxBeforeTransfer = 20.0;
+        String currencyCodeInBox = "PLN";
+        collectionBox.setEvent(event);
+        collectionBox.setBalance(new HashMap<>() {{
+            put(currencyCodeInBox, amountInBoxBeforeTransfer);
+        }});
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
+        TransferMoneyToCollectionBoxRequest request =
+                TransferMoneyToCollectionBoxRequest.builder()
+                        .currencyCode(currencyCodeInBox)
+                        .amount(10.0)
+                        .build();
+
+        collectionBoxService.transfer(collectionBox.getUuid(), request);
+
+        assertEquals(
+                request.amount() + amountInBoxBeforeTransfer,
+                collectionBox.getBalance().get(request.currencyCode())
+        );
+    }
+
+    @Test
+    void transfer_SuccessfullyTransfer_MoreCurrenciesInBox(){
+        Double amountInBoxBeforeTransfer = 20.0;
+        String currencyCodeInBox = "PLN";
+        collectionBox.setEvent(event);
+        collectionBox.setBalance(new HashMap<>(){{
+            put("EUR", 200.0);
+            put(currencyCodeInBox, amountInBoxBeforeTransfer);
+        }});
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
+        TransferMoneyToCollectionBoxRequest request =
+                TransferMoneyToCollectionBoxRequest.builder()
+                        .currencyCode(currencyCodeInBox)
+                        .amount(10.0)
+                        .build();
+
+        collectionBoxService.transfer(collectionBox.getUuid(), request);
+
+        assertEquals(
+                request.amount() + amountInBoxBeforeTransfer,
+                collectionBox.getBalance().get(request.currencyCode())
+        );
+    }
+
+    @Test
+    void transfer_UnsuccessfullyTransfer_NegativeAmountOfMoney(){
+        collectionBox.setEvent(event);
+        TransferMoneyToCollectionBoxRequest request =
+                TransferMoneyToCollectionBoxRequest.builder()
+                        .currencyCode("PLN")
+                        .amount(-10.0)
+                        .build();
+
+        assertThrows(
+                IncorrectMoneyValueException.class,
+                ()->collectionBoxService.transfer(collectionBox.getUuid(), request)
+        );
+    }
+
+    @Test
+    void transfer_UnsuccessfullyTransfer_ZeroAmount(){
+        collectionBox.setEvent(event);
+        TransferMoneyToCollectionBoxRequest request =
+                TransferMoneyToCollectionBoxRequest.builder()
+                        .currencyCode("PLN")
+                        .amount(0.0)
+                        .build();
+
+        assertThrows(
+                IncorrectMoneyValueException.class,
+                ()->collectionBoxService.transfer(collectionBox.getUuid(), request)
+        );
     }
 }

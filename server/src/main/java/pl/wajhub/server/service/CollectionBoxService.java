@@ -17,7 +17,6 @@ import pl.wajhub.server.repository.FundraisingEventRepository;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -93,8 +92,7 @@ public class CollectionBoxService {
             throw new IncorrectMoneyValueException(money.amount());
         CollectionBox collectionBox = collectionBoxRepository.findById(uuid)
                 .orElseThrow(() -> new CollectionBoxNotFoundException(uuid));
-        Double value = collectionBox.getBalance().get(money.currencyCode());
-        collectionBox.getBalance().replace(money.currencyCode(), money.amount()+value);
+        collectionBox.transfer(money.currencyCode(), money.amount());
         var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
     }

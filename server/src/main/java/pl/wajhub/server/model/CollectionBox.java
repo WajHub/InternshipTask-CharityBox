@@ -39,4 +39,11 @@ public class CollectionBox {
         return true;
     }
 
+    public void transfer(String currencyCode, Double amount){
+        if(balance.containsKey(currencyCode))
+            balance.put(currencyCode, balance.get(currencyCode)+amount);
+        else
+            balance.put(currencyCode, amount);
+    }
+
 }
