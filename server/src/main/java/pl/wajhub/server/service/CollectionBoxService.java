@@ -78,14 +78,11 @@ public class CollectionBoxService {
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox);
     }
 
-    public CollectionBoxDtoResponse unregister(UUID uuid) {
+    public void unregister(UUID uuid) {
         CollectionBox collectionBox =
                 collectionBoxRepository.findById(uuid)
                 .orElseThrow(() -> new CollectionBoxNotFoundException(uuid));
-        collectionBox.setEvent(null);
-        collectionBox.setBalance(new HashMap<>());
-        collectionBoxRepository.save(collectionBox);
-        return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox);
+        collectionBoxRepository.delete(collectionBox);
     }
 
     @Transactional

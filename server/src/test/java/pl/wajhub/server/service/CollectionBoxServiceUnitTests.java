@@ -161,27 +161,9 @@ class CollectionBoxServiceUnitTests {
     @Test
     public void unregister_SuccessfullyUnregisterCollectionBox_UnregisterExistingBox(){
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
-        collectionBox.setEvent(event);
         collectionBoxService.unregister(collectionBox.getUuid());
 
-        assertNull(collectionBox.getEvent());
-    }
-
-    @Test
-    public void unregister_SuccessfullyEmptiedCollectionBox_UnregisterExistingBox(){
-        CollectionBox collectionBox = CollectionBox.builder()
-                .event(event)
-                .balance(new HashMap<>(){{put("PLN",10.0);}})
-                .build();
-        collectionBox.setEvent(event);
-        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
-        collectionBoxService.unregister(collectionBox.getUuid());
-
-        double sumBalanceCollectionBox =
-                collectionBox.getBalance().values()
-                        .stream()
-                        .mapToDouble(d-> d).sum();
-        assertEquals(0.0, sumBalanceCollectionBox);
+        Mockito.verify(collectionBoxRepository).delete(collectionBox);
     }
 
     @Test

@@ -56,11 +56,10 @@ public class CollectionBoxController {
         return new ResponseEntity<>(collectionBox, HttpStatus.OK);
     }
 
-    @PatchMapping("/collections/{uuid}/unregister")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CollectionBoxDtoResponse> unregisterCollection(@PathVariable UUID uuid) {
-        CollectionBoxDtoResponse collectionBox = collectionBoxService.unregister(uuid);
-        return new ResponseEntity<>(collectionBox, HttpStatus.OK);
+    @DeleteMapping("/collections/{uuid}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void unregisterCollection(@PathVariable UUID uuid) {
+        collectionBoxService.unregister(uuid);
     }
 
     @PatchMapping("/collections/{uuid}")
