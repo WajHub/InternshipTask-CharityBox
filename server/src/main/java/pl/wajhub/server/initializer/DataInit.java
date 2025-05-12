@@ -55,7 +55,7 @@ public class DataInit {
                         UUID.fromString("56eb1354-a780-446f-beb9-705602f25104")
                 );
 
-        CollectionBoxDtoResponse collectionBox2 = collectionBoxService.
+        CollectionBoxDtoResponse notRegisteredCollection = collectionBoxService.
                 create(UUID.fromString("5a65a78b-e765-4b26-92ea-4903124ae19c"));
 
     }
