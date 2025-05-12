@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @WebMvcTest(FundraisingEventController.class)
 @ExtendWith(MockitoExtension.class)
-class FundraisingEventControllerTests {
+class FundraisingEventControllerUnitTests {
 
     @Autowired
     private MockMvc mockMvc;

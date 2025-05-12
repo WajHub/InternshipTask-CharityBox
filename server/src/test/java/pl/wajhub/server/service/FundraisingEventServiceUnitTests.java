@@ -25,7 +25,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class FundraisingEventServiceTests {
+class FundraisingEventServiceUnitTests {
 
     @Mock
     private FundraisingEventRepository eventRepository;

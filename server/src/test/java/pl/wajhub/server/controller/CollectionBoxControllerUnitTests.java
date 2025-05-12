@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(CollectionBoxController.class)
 @ExtendWith(MockitoExtension.class)
-public class CollectionBoxControllerTests {
+public class CollectionBoxControllerUnitTests {
 
     @Autowired
     private MockMvc mockMvc;

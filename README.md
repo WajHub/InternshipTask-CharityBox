@@ -2,7 +2,7 @@
 
 ## 🚀 How to run
 
-1. **Create .env file and complete content**
+1. **Create .env file in the `server/src/main/resources/`  and complete content**
 
     ```
     API_KEY=
