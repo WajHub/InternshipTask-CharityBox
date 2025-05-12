@@ -88,7 +88,7 @@ class FundraisingEventControllerUnitTests {
                         .uuid(eventUuid)
                         .name("Charity One")
                         .currencyCode("PLN")
-                        .amount(100.0)
+                        .balance(100.0)
                         .build();
         when(eventService.transfer(eventUuid, collectionUuid)).thenReturn(dtoResponse);
 
@@ -97,6 +97,6 @@ class FundraisingEventControllerUnitTests {
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(dtoResponse.name())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.amount", CoreMatchers.is(dtoResponse.amount())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.balance", CoreMatchers.is(dtoResponse.balance())));
     }
 }
