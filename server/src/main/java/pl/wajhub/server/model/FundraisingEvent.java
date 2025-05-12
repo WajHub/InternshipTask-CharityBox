@@ -18,8 +18,8 @@ import java.util.UUID;
 public class FundraisingEvent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID uuid;
+    @Builder.Default
+    private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false, unique = true)
     private String name;

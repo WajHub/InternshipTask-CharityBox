@@ -67,6 +67,7 @@ public class FundraisingEventService {
         if (eventOptional.isPresent())
             return mapper.eventToEventDtoResponse(eventOptional.get());
         var event =  mapper.eventDtoRequestToEvent(eventDtoRequest);
+        event.setUuid(uuid);
         var eventSaved = eventRepository.save(event);
         return mapper.eventToEventDtoResponse(eventSaved);
     }

@@ -9,6 +9,8 @@ import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
 import pl.wajhub.server.service.CollectionBoxService;
 import pl.wajhub.server.service.FundraisingEventService;
 
+import java.util.UUID;
+
 @Component
 public class DataInit {
 
@@ -26,11 +28,13 @@ public class DataInit {
         FundraisingEventDtoResponse event =
             eventService.create(
                 FundraisingEventDtoRequest.builder()
-                        .name("Test - Event")
+                        .name("Charity One")
                         .currencyCode("PLN")
-                .build()
+                .build(),
+                UUID.fromString("66eaa713-c6a8-47c6-98fa-da78bfab9376")
             );
-        CollectionBoxDtoResponse collectionBox = collectionBoxService.create();
+        CollectionBoxDtoResponse collectionBox = collectionBoxService.
+                create(UUID.fromString("be4c9355-bac8-4262-84f9-07cc1eb1a192"));
         collectionBoxService.register(event.uuid(), collectionBox.uuid());
     }
 }

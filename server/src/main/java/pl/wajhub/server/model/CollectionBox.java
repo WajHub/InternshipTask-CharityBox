@@ -15,8 +15,8 @@ import java.util.*;
 public class CollectionBox {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID uuid;
+    @Builder.Default
+    private UUID uuid = UUID.randomUUID();
 
     @ManyToOne
     @JoinColumn(name = "event_uuid")
@@ -27,6 +27,7 @@ public class CollectionBox {
             joinColumns = {@JoinColumn(name = "box_id", referencedColumnName = "uuid")})
     @MapKeyColumn(name = "currency_code")
     @Column(name = "balance")
+    @Builder.Default
     private Map<String, Double> balance = new HashMap<>();
 
     public boolean isEmpty(){
