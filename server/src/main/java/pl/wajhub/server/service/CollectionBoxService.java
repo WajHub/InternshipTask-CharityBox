@@ -66,6 +66,8 @@ public class CollectionBoxService {
                 .orElseThrow(() -> new CollectionBoxNotFoundException(collectionUuid));
         if(!collectionBox.isEmpty())
             throw new CollectionBoxIsNotEmptyException();
+        if(collectionBox.getEvent()!=null)
+            throw new CollectionBoxIsAlreadyRegisteredException("You can't register collection box, which is already in use!");
         collectionBox.setEvent(event);
         collectionBoxRepository.save(collectionBox);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox);

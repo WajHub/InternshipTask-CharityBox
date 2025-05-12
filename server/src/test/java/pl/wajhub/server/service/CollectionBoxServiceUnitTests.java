@@ -55,7 +55,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void create_SuccessfullyCreated_NewCollectionBox() {
+    public void create_SuccessfullyCreated_NewCollectionBox() {
         Mockito.when(collectionBoxRepository.save(Mockito.any(CollectionBox.class))).thenReturn(collectionBox);
         Mockito.when(collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox)).thenReturn(collectionBoxDtoResponse);
 
@@ -66,7 +66,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void create_SuccessfullyCreated_NewCollectionBoxWithUuid(){
+    public void create_SuccessfullyCreated_NewCollectionBoxWithUuid(){
         Mockito.when(collectionBoxRepository.save(Mockito.any(CollectionBox.class))).thenReturn(collectionBox);
         Mockito.when(collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox)).thenReturn(collectionBoxDtoResponse);
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.empty());
@@ -78,7 +78,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void create_ReturnExistingObject_NewCollectionBoxWithExistingUuid(){
+    public void create_ReturnExistingObject_NewCollectionBoxWithExistingUuid(){
         Mockito.when(collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBox)).thenReturn(collectionBoxDtoResponse);
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
 
@@ -89,7 +89,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void register_ThrowEventNotFoundException_RegisterToNotExistingEvent(){
+    public void register_ThrowEventNotFoundException_RegisterToNotExistingEvent(){
         UUID randomUuid = UUID.randomUUID();
         Mockito.when(eventRepository.findById(randomUuid)).thenReturn(Optional.empty());
 
@@ -98,7 +98,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void register_ThrowCollectionBoxNotFoundException_RegisterNotExistingCollectionBox(){
+    public void register_ThrowCollectionBoxNotFoundException_RegisterNotExistingCollectionBox(){
         UUID randomUuid = UUID.randomUUID();
         Mockito.when(eventRepository.findById(event.getUuid())).thenReturn(Optional.of(event));
         Mockito.when(collectionBoxRepository.findById(randomUuid)).thenReturn(Optional.empty());
@@ -108,7 +108,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void register_SuccessfullyRegisteredCollectionBoxToEvent_RegisterExistingBoxToExistingEvent(){
+    public void register_SuccessfullyRegisteredCollectionBoxToEvent_RegisterExistingBoxToExistingEvent(){
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
         Mockito.when(eventRepository.findById(event.getUuid())).thenReturn(Optional.of(event));
 
@@ -116,7 +116,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void register_UnsuccessfullyRegisterNotEmptyCollectionBox_NotEmptyCollectionBox(){
+    public void register_UnsuccessfullyRegisterNotEmptyCollectionBox_NotEmptyCollectionBox(){
         collectionBox.setBalance(new HashMap<>(){{put("PLN", 10.0);}});
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
         Mockito.when(eventRepository.findById(event.getUuid())).thenReturn(Optional.of(event));
@@ -128,7 +128,23 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void unregister_ThrowCollectionBoxNotFoundException_UnregisterNotExistingCollectionBox(){
+    public void register_ThrowCollectionBoxIsAlreadyRegisteredException_RegisteredBox(){
+        collectionBox.setEvent(FundraisingEvent.builder()
+                .name("TEST")
+                        .balance(0.0)
+                        .currencyCode("PLN")
+                .build());
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
+        Mockito.when(eventRepository.findById(event.getUuid())).thenReturn(Optional.of(event));
+
+        assertThrows(
+                CollectionBoxIsAlreadyRegisteredException.class,
+                () -> collectionBoxService.register(event.getUuid(), collectionBox.getUuid())
+        );
+    }
+
+    @Test
+    public void unregister_ThrowCollectionBoxNotFoundException_UnregisterNotExistingCollectionBox(){
         UUID randomUuid = UUID.randomUUID();
         Mockito.when(collectionBoxRepository.findById(randomUuid)).thenReturn(Optional.empty());
 
@@ -137,7 +153,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void unregister_SuccessfullyUnregisterCollectionBox_UnregisterExistingBox(){
+    public void unregister_SuccessfullyUnregisterCollectionBox_UnregisterExistingBox(){
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
         collectionBox.setEvent(event);
         collectionBoxService.unregister(collectionBox.getUuid());
@@ -146,7 +162,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void unregister_SuccessfullyEmptiedCollectionBox_UnregisterExistingBox(){
+    public void unregister_SuccessfullyEmptiedCollectionBox_UnregisterExistingBox(){
         CollectionBox collectionBox = CollectionBox.builder()
                 .event(event)
                 .balance(new HashMap<>(){{put("PLN",10.0);}})
@@ -163,7 +179,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void transfer_SuccessfullyTransfer_NewCurrencyInBox(){
+    public void transfer_SuccessfullyTransfer_NewCurrencyInBox(){
         collectionBox.setEvent(event);
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
         TransferMoneyToCollectionBoxRequest request =
@@ -181,7 +197,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void transfer_SuccessfullyTransfer_ExistingCurrencyInBox() {
+    public void transfer_SuccessfullyTransfer_ExistingCurrencyInBox() {
         Double amountInBoxBeforeTransfer = 20.0;
         String currencyCodeInBox = "PLN";
         collectionBox.setEvent(event);
@@ -204,7 +220,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void transfer_SuccessfullyTransfer_MoreCurrenciesInBox(){
+    public void transfer_SuccessfullyTransfer_MoreCurrenciesInBox(){
         Double amountInBoxBeforeTransfer = 20.0;
         String currencyCodeInBox = "PLN";
         collectionBox.setEvent(event);
@@ -228,7 +244,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void transfer_UnsuccessfullyTransfer_NegativeAmountOfMoney(){
+    public void transfer_UnsuccessfullyTransfer_NegativeAmountOfMoney(){
         collectionBox.setEvent(event);
         TransferMoneyToCollectionBoxRequest request =
                 TransferMoneyToCollectionBoxRequest.builder()
@@ -243,7 +259,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void transfer_UnsuccessfullyTransfer_ZeroAmount(){
+    public void transfer_UnsuccessfullyTransfer_ZeroAmount(){
         collectionBox.setEvent(event);
         TransferMoneyToCollectionBoxRequest request =
                 TransferMoneyToCollectionBoxRequest.builder()
@@ -258,7 +274,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    void transfer_UnsuccessfullyTransfer_NotAssignedEvent(){
+    public void transfer_UnsuccessfullyTransfer_NotAssignedEvent(){
         TransferMoneyToCollectionBoxRequest request =
                 TransferMoneyToCollectionBoxRequest.builder()
                         .currencyCode("PLN")
