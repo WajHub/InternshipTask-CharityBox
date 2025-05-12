@@ -1,6 +1,6 @@
 # InternshipTask-CharityBox
 
-Simple API managing collection boxes during fundraising events for charity organizations. The Web API was created using Spring Boot and follows the **REST architectural style**. The application is built with **Java 24**, **Hibernate** for ORM, **Maven** for dependency management, and **H2** as an in-memory. The project  is located in the [`server`](https://github.com/WajHub/InternshipTask-CharityBox/tree/main/server).
+Simple API managing collection boxes during fundraising events for charity organizations. The Web API was created using Spring Boot and follows the **REST architectural style**. The application is built with **Java 24**, **Hibernate** for ORM, **Maven** for dependency management, and **H2** as an in-memory database. The project  is located in the [`server`](https://github.com/WajHub/InternshipTask-CharityBox/tree/main/server).
 
 For testing, I used **JUnit 5** and **Mockito** for Unit Tests and **MockMvc** int Integration Tests to simulate HTTP requests and verify the behavior of the API. The project also integrates an external API to fetch exchange rates from  [`https://www.exchangerate-api.com/`](https://www.exchangerate-api.com/).
 
