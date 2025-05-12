@@ -37,8 +37,6 @@ public class FundraisingEventController {
     public ResponseEntity<FundraisingEventDtoResponse> createEvent(
             @Valid @RequestBody FundraisingEventDtoRequest eventDtoRequest
     ){
-        if( eventDtoRequest == null || eventDtoRequest.name().isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");
         FundraisingEventDtoResponse event = eventService.create(eventDtoRequest);
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
