@@ -49,7 +49,7 @@ class FundraisingEventControllerIntegrationTests {
                 FundraisingEventDtoResponse.builder()
                         .uuid(eventUuid)
                         .name("Charity One")
-                        .currencyCode("PLN")
+                        .currencyCode("EUR")
                         .balance(100.0)
                         .build();
 

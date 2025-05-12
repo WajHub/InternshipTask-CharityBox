@@ -1,5 +1,18 @@
-POST http://localhost:8080/api/v1/events
+### GET all events
+GET http://localhost:8080/api/v1/events
+
+### GET all events
+GET http://localhost:8080/api/v1/collections
+
+### Transfer from CollectionBox to FundraisingEvent
+PATCH http://localhost:8080/api/v1/events/66eaa713-c6a8-47c6-98fa-da78bfab9376/collections/be4c9355-bac8-4262-84f9-07cc1eb1a192/transfer
+
+
+### Transfer to CollectionBox
+PATCH http://localhost:8080/api/v1/collections/be4c9355-bac8-4262-84f9-07cc1eb1a192/transfer
 Content-Type: application/json
 
 {
+  "amount": 25.50,
+  "currencyCode": "EUR"
 }

@@ -30,7 +30,7 @@ public class DataInit {
             eventService.create(
                 FundraisingEventDtoRequest.builder()
                         .name("Charity One")
-                        .currencyCode("PLN")
+                        .currencyCode("EUR")
                 .build(),
                 UUID.fromString("66eaa713-c6a8-47c6-98fa-da78bfab9376")
             );
@@ -39,6 +39,24 @@ public class DataInit {
         collectionBoxService.register(event.uuid(), collectionBox.uuid());
         collectionBoxService.transfer(
                 collectionBox.uuid(),
-                TransferMoneyToCollectionBoxRequest.builder().currencyCode("PLN").amount(100.0).build());
+                TransferMoneyToCollectionBoxRequest.builder().currencyCode("EUR").amount(100.0).build()
+        );
+        collectionBoxService.transfer(
+                collectionBox.uuid(),
+                TransferMoneyToCollectionBoxRequest.builder().currencyCode("USD").amount(50.2).build()
+        );
+
+        FundraisingEventDtoResponse event2 =
+                eventService.create(
+                        FundraisingEventDtoRequest.builder()
+                                .name("All for hope")
+                                .currencyCode("GBP")
+                                .build(),
+                        UUID.fromString("56eb1354-a780-446f-beb9-705602f25104")
+                );
+
+        CollectionBoxDtoResponse collectionBox2 = collectionBoxService.
+                create(UUID.fromString("5a65a78b-e765-4b26-92ea-4903124ae19c"));
+
     }
 }
