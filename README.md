@@ -1,6 +1,16 @@
 # InternshipTask-CharityBox
 
-## 🚀 How to run
+Simple API managing collection boxes during fundraising events for charity organizations. The Web API was created using Spring Boot and follows the **REST architectural style**. The application is built with **Java 24**, **Hibernate** for ORM, **Maven** for dependency management, and **H2** as an in-memory. The project  is located in the [`server`](https://github.com/WajHub/InternshipTask-CharityBox/tree/main/server).
+
+For testing, I used **JUnit 5** and **Mockito** for Unit Tests and **MockMvc** int Integration Tests to simulate HTTP requests and verify the behavior of the API. The project also integrates an external API to fetch exchange rates from  [`https://www.exchangerate-api.com/`](https://www.exchangerate-api.com/).
+
+- [How to run](#how-to-run)
+- [How to run test](#how-to-run-tests)
+- [Endpoints](#endpoints)
+- [Schema Database](#Schema-Database)
+
+
+## How to run
 
 1. **Create .env file in the `server/src/main/resources/`  and complete content**
 
@@ -8,20 +18,67 @@
     API_KEY=
     ```
 
-    >  **How to get API_KEY?** You can Generate api key here: [https://www.exchangerate-api.com/](https://www.exchangerate-api.com/)
+    >  **How to get API_KEY?** You can Generate api key here: [`https://www.exchangerate-api.com/`](https://www.exchangerate-api.com/)
 
-2. **Navigate to the main directory**
+2. **With Docker**
+   - **Navigate to the main directory**
     ```bash
     cd InernhshipTaks-Charity
     ```
-
-3. **Run docker**
+   - **Run docker**
 
     ```bash
     docker compose up --build
     ```
+
+3. **Without Docker**
+   - **Navigate to the main directory**
+    ```bash
+    cd InernhshipTaks-Charity/server
+    ```
+   - **Run Spring boot Application**
+
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+
+The Swagger UI will be available at: [`http://localhost:8080/swagger-ui/index.html`](http://localhost:8080/swagger-ui/index.html)
+
+## How to run tests
+
+1. **Navigate to the main directory**
+
+   ```bash
+   cd InernhshipTaks-Charity/server
+    ```
    
-## Database Schema
+   - All tests
+   ```bash
+   ./mvnw test
+    ```
+   
+   - Only unit tests
+   ```bash
+    ./mvnw -Dtest='*UnitTests' test
+    ```
+
+   - Only integration tests
+   ```bash
+    ./mvnw -Dtest='*IntegrationTests' test
+
+    ```
+   
+Tests are located in [`tests`](https://github.com/WajHub/InternshipTask-CharityBox/tree/main/server/src/test).
+
+## Endpoints
+
+   - `GET /api/v1/events` - **Display a financial report with all fundraising events and the sum of their accounts.**
+   - `POST /api/v1/events` - **Create a new fundraising event.**
+   - `PUT /api/v1/events/{uuid}` - Create a new fundraising event with provided UUId to simplify testing.
+   - `GET /api/v1/collections` - **List all collection boxes. Include information if the box is assigned (but don’t expose to what
+     fundraising event) and if it is empty or not (but don’t expose the actual value in the box).**
+   
+## Schema Database
 
 ```mermaid
   erDiagram
