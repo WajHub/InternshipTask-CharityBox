@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.wajhub.server.dto.request.FundraisingEventDtoRequest;
+import pl.wajhub.server.dto.request.TransferMoneyToCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
 import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
 import pl.wajhub.server.service.CollectionBoxService;
@@ -36,5 +37,8 @@ public class DataInit {
         CollectionBoxDtoResponse collectionBox = collectionBoxService.
                 create(UUID.fromString("be4c9355-bac8-4262-84f9-07cc1eb1a192"));
         collectionBoxService.register(event.uuid(), collectionBox.uuid());
+        collectionBoxService.transfer(
+                collectionBox.uuid(),
+                TransferMoneyToCollectionBoxRequest.builder().currencyCode("PLN").amount(100.0).build());
     }
 }

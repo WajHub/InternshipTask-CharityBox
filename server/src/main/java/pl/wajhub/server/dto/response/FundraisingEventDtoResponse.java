@@ -12,5 +12,5 @@ public record FundraisingEventDtoResponse(
         String name,
         @Schema(name = "CurrencyCode", example = "PLN", description = "Currency code according to ISO 4217")
         @CurrencyCodeConstraint String currencyCode,
-        Double amount) {
+        Double balance) {
 }
