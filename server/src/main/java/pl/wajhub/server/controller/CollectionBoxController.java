@@ -1,5 +1,6 @@
 package pl.wajhub.server.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,9 +67,8 @@ public class CollectionBoxController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CollectionBoxDtoResponse> transferMoney(
             @PathVariable UUID uuid,
-            @RequestBody TransferMoneyToCollectionBoxRequest money
+            @Valid @RequestBody TransferMoneyToCollectionBoxRequest money
             ) {
-        System.out.println(money);
         CollectionBoxDtoResponse collectionBox = collectionBoxService.transfer(uuid, money);
         return new ResponseEntity<>(collectionBox, HttpStatus.OK);
     }

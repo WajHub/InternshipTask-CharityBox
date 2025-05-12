@@ -124,7 +124,7 @@ class FundraisingEventServiceTests {
 
         eventService.transfer(event.getUuid(), collectionBox.getUuid());
 
-        assertEquals(amount, event.getAmount());
+        assertEquals(amount, event.getBalance());
     }
 
     @Test
@@ -135,7 +135,7 @@ class FundraisingEventServiceTests {
         String destinationCurrencyCode = eventCurrencyCode;
         String sourceCurrencyCode = "EUR";
 
-        event.setAmount(startAmount);
+        event.setBalance(startAmount);
         CollectionBox collectionBox = CollectionBox.builder()
                 .uuid(UUID.randomUUID())
                 .balance(new HashMap<>() {{
@@ -151,7 +151,7 @@ class FundraisingEventServiceTests {
 
         eventService.transfer(event.getUuid(), collectionBox.getUuid());
 
-        assertEquals(startAmount+amount*standardRate, event.getAmount());
+        assertEquals(startAmount+amount*standardRate, event.getBalance());
     }
 
     @Test
@@ -162,7 +162,7 @@ class FundraisingEventServiceTests {
         String destinationCurrencyCode = eventCurrencyCode;
         String sourceCurrencyCode = "EUR";
 
-        event.setAmount(startAmount);
+        event.setBalance(startAmount);
         CollectionBox collectionBox = CollectionBox.builder()
                 .uuid(UUID.randomUUID())
                 .balance(new HashMap<>() {{
@@ -179,7 +179,7 @@ class FundraisingEventServiceTests {
 
         eventService.transfer(event.getUuid(), collectionBox.getUuid());
 
-        assertEquals(startAmount+amount+amount*standardRate, event.getAmount());
+        assertEquals(startAmount+amount+amount*standardRate, event.getBalance());
     }
 
     @Test
