@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.wajhub.server.exception.CurrencyCodeException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,35 +29,14 @@ public class CurrencyCodeValidationTests {
     }
 
     @Test
-    public void throwCurrencyCodeException(){
-        assertThrows(
-                CurrencyCodeException.class,
-                ()-> validator.isValid("FALSE", constraintValidatorContext)
-        );
-        assertThrows(
-                CurrencyCodeException.class,
-                ()-> validator.isValid("...", constraintValidatorContext)
-        );
-        assertThrows(
-                CurrencyCodeException.class,
-                ()-> validator.isValid("UDS", constraintValidatorContext)
-        );
-        assertThrows(
-                CurrencyCodeException.class,
-                ()-> validator.isValid("PL", constraintValidatorContext)
-        );
-        assertThrows(
-                CurrencyCodeException.class,
-                ()-> validator.isValid("P.N", constraintValidatorContext)
-        );
-        assertThrows(
-                CurrencyCodeException.class,
-                ()-> validator.isValid("", constraintValidatorContext)
-        );
-        assertThrows(
-                CurrencyCodeException.class,
-                ()-> validator.isValid("pln", constraintValidatorContext)
-        );
+    public void throwMethodArgumentNotValidException(){
+        assertFalse(validator.isValid("FALSE", constraintValidatorContext));
+        assertFalse(validator.isValid("...", constraintValidatorContext));
+        assertFalse(validator.isValid("UDS", constraintValidatorContext));
+        assertFalse(validator.isValid("PL", constraintValidatorContext));
+        assertFalse(validator.isValid("P.N", constraintValidatorContext));
+        assertFalse(validator.isValid("", constraintValidatorContext));
+        assertFalse(validator.isValid("pln", constraintValidatorContext));
     }
 
 }

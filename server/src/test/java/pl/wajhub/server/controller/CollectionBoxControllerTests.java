@@ -2,7 +2,6 @@ package pl.wajhub.server.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.ValidationException;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,14 +13,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import pl.wajhub.server.dto.request.TransferMoneyToCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
-import pl.wajhub.server.exception.IncorrectMoneyValueException;
-import pl.wajhub.server.model.CollectionBox;
-import pl.wajhub.server.model.FundraisingEvent;
 import pl.wajhub.server.service.CollectionBoxService;
 
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -122,7 +119,7 @@ public class CollectionBoxControllerTests {
                         .content(requestBody))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertInstanceOf(ValidationException.class, result.getResolvedException()));
+                .andExpect(result -> assertInstanceOf(MethodArgumentNotValidException.class, result.getResolvedException()));
     }
 
 }

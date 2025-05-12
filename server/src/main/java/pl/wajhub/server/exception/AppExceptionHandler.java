@@ -26,11 +26,6 @@ public class AppExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(CurrencyCodeException.class)
-    public ResponseEntity<String> exceptionHandler(CurrencyCodeException ex) {
-        return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(EventDuplicateNameException.class)
     public ResponseEntity<String> exceptionHandler(EventDuplicateNameException ex) {
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
