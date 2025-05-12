@@ -41,7 +41,7 @@ public class FundraisingEventController {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
-    @PostMapping("/events/{uuid}")
+    @PutMapping("/events/{uuid}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<FundraisingEventDtoResponse> createEvent(
             @Valid @RequestBody FundraisingEventDtoRequest eventDtoRequest,
