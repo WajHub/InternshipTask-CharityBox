@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import pl.wajhub.server.dto.request.TransferMoneyToCollectionBoxRequest;
+import pl.wajhub.server.dto.request.PutMoneyToCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
 import pl.wajhub.server.service.CollectionBoxService;
 
@@ -76,21 +76,21 @@ public class CollectionBoxControllerUnitTests {
     }
 
     @Test
-    public void transferMoney_SuccessfullyTransfer_NewCurrency() throws Exception {
+    public void putMoney_SuccessfullyPut_NewCurrency() throws Exception {
         CollectionBoxDtoResponse dtoResponse =  CollectionBoxDtoResponse.builder()
                 .uuid(UUID.randomUUID())
                 .isEmpty(false)
                 .isAssigned(true)
                 .build();
-        TransferMoneyToCollectionBoxRequest request = TransferMoneyToCollectionBoxRequest.builder()
+        PutMoneyToCollectionBoxRequest request = PutMoneyToCollectionBoxRequest.builder()
                 .currencyCode("PLN")
                 .amount(10.0)
                 .build();
         String requestBody = objectMapper.writeValueAsString(request);
 
-        when(collectionBoxService.transfer(dtoResponse.uuid(), request)).thenReturn(dtoResponse);
+        when(collectionBoxService.putMoney(dtoResponse.uuid(), request)).thenReturn(dtoResponse);
 
-        mockMvc.perform(patch("/api/v1/collections/"+dtoResponse.uuid()+"/transfer")
+        mockMvc.perform(patch("/api/v1/collections/"+dtoResponse.uuid())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andDo(print())
@@ -100,21 +100,21 @@ public class CollectionBoxControllerUnitTests {
     }
 
     @Test
-    public void transferMoney_ThrowException_IncorrectCurrencyCode() throws Exception {
+    public void putMoney_ThrowException_IncorrectCurrencyCode() throws Exception {
         CollectionBoxDtoResponse dtoResponse =  CollectionBoxDtoResponse.builder()
                 .uuid(UUID.randomUUID())
                 .isEmpty(false)
                 .isAssigned(true)
                 .build();
-        TransferMoneyToCollectionBoxRequest request = TransferMoneyToCollectionBoxRequest.builder()
+        PutMoneyToCollectionBoxRequest request = PutMoneyToCollectionBoxRequest.builder()
                 .currencyCode("dfgsdfgsdfg")
                 .amount(10.0)
                 .build();
         String requestBody = objectMapper.writeValueAsString(request);
 
-        when(collectionBoxService.transfer(dtoResponse.uuid(), request)).thenReturn(dtoResponse);
+        when(collectionBoxService.putMoney(dtoResponse.uuid(), request)).thenReturn(dtoResponse);
 
-        mockMvc.perform(patch("/api/v1/collections/"+dtoResponse.uuid()+"/transfer")
+        mockMvc.perform(patch("/api/v1/collections/"+dtoResponse.uuid())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andDo(print())

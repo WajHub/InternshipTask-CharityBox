@@ -3,7 +3,7 @@ package pl.wajhub.server.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.wajhub.server.dto.request.TransferMoneyToCollectionBoxRequest;
+import pl.wajhub.server.dto.request.PutMoneyToCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
 import pl.wajhub.server.exception.*;
 import pl.wajhub.server.mapper.CollectionBoxMapper;
@@ -84,9 +84,9 @@ public class CollectionBoxService {
     }
 
     @Transactional
-    public CollectionBoxDtoResponse transfer(
+    public CollectionBoxDtoResponse putMoney(
             UUID uuid,
-            TransferMoneyToCollectionBoxRequest money) {
+            PutMoneyToCollectionBoxRequest money) {
         if(money.amount()<=0.0)
             throw new IncorrectMoneyValueException(money.amount());
         CollectionBox collectionBox = collectionBoxRepository.findById(uuid)
