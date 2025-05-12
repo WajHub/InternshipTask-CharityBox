@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.wajhub.server.dto.request.TransferMoneyToCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
-import pl.wajhub.server.exception.CollectionBoxIsNotEmptyException;
-import pl.wajhub.server.exception.CollectionBoxNotFoundException;
-import pl.wajhub.server.exception.EventNotFoundException;
-import pl.wajhub.server.exception.IncorrectMoneyValueException;
+import pl.wajhub.server.exception.*;
 import pl.wajhub.server.mapper.CollectionBoxMapper;
 import pl.wajhub.server.model.CollectionBox;
 import pl.wajhub.server.model.FundraisingEvent;
@@ -92,6 +89,8 @@ public class CollectionBoxService {
             throw new IncorrectMoneyValueException(money.amount());
         CollectionBox collectionBox = collectionBoxRepository.findById(uuid)
                 .orElseThrow(() -> new CollectionBoxNotFoundException(uuid));
+        if(collectionBox.getEvent() == null )
+            throw new CollectionBoxIsNotAssigned("You can't transfer money to not assigned Collection Box!");
         collectionBox.transfer(money.currencyCode(), money.amount());
         var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);

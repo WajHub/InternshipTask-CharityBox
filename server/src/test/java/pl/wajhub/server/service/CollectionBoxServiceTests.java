@@ -9,10 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.wajhub.server.dto.request.TransferMoneyToCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
-import pl.wajhub.server.exception.CollectionBoxIsNotEmptyException;
-import pl.wajhub.server.exception.CollectionBoxNotFoundException;
-import pl.wajhub.server.exception.EventNotFoundException;
-import pl.wajhub.server.exception.IncorrectMoneyValueException;
+import pl.wajhub.server.exception.*;
 import pl.wajhub.server.mapper.CollectionBoxMapper;
 import pl.wajhub.server.model.CollectionBox;
 import pl.wajhub.server.model.FundraisingEvent;
@@ -257,6 +254,21 @@ class CollectionBoxServiceTests {
         assertThrows(
                 IncorrectMoneyValueException.class,
                 ()->collectionBoxService.transfer(collectionBox.getUuid(), request)
+        );
+    }
+
+    @Test
+    void transfer_UnsuccessfullyTransfer_NotAssignedEvent(){
+        TransferMoneyToCollectionBoxRequest request =
+                TransferMoneyToCollectionBoxRequest.builder()
+                        .currencyCode("PLN")
+                        .amount(10.0)
+                        .build();
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
+
+        assertThrows(
+                CollectionBoxIsNotAssigned.class,
+                () -> collectionBoxService.transfer(collectionBox.getUuid(), request)
         );
     }
 }
