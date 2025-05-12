@@ -11,8 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
-import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
-import pl.wajhub.server.model.CollectionBox;
 
 import java.util.UUID;
 

@@ -305,8 +305,6 @@ class CollectionBoxServiceUnitTests {
                 .event(event)
                 .balance(balanceInCollectionBox)
                 .build();
-        Mockito.when(eventRepository.findById(event.getUuid()))
-                .thenReturn(Optional.of(event));
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
                 .thenReturn(Optional.of(collectionBox));
 
@@ -326,13 +324,12 @@ class CollectionBoxServiceUnitTests {
         event.setBalance(startAmount);
         CollectionBox collectionBox = CollectionBox.builder()
                 .uuid(UUID.randomUUID())
+                .event(event)
                 .balance(new HashMap<>() {{
                     put(sourceCurrencyCode,amount);
                 }})
                 .build();
 
-        Mockito.when(eventRepository.findById(event.getUuid()))
-                .thenReturn(Optional.of(event));
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
                 .thenReturn(Optional.of(collectionBox));
         Mockito.when(exchangeService.getRate(sourceCurrencyCode, destinationCurrencyCode)).thenReturn(standardRate);
@@ -353,14 +350,13 @@ class CollectionBoxServiceUnitTests {
         event.setBalance(startAmount);
         CollectionBox collectionBox = CollectionBox.builder()
                 .uuid(UUID.randomUUID())
+                .event(event)
                 .balance(new HashMap<>() {{
                     put(sourceCurrencyCode,amount);
                     put(destinationCurrencyCode, amount);
                 }})
                 .build();
 
-        Mockito.when(eventRepository.findById(event.getUuid()))
-                .thenReturn(Optional.of(event));
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
                 .thenReturn(Optional.of(collectionBox));
         Mockito.when(exchangeService.getRate(sourceCurrencyCode, destinationCurrencyCode)).thenReturn(standardRate);
@@ -382,10 +378,9 @@ class CollectionBoxServiceUnitTests {
                     put(sourceCurrencyCode,amount);
                     put(destinationCurrencyCode, amount);
                 }})
+                .event(event)
                 .build();
 
-        Mockito.when(eventRepository.findById(event.getUuid()))
-                .thenReturn(Optional.of(event));
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
                 .thenReturn(Optional.of(collectionBox));
         Mockito.when(exchangeService.getRate(sourceCurrencyCode, destinationCurrencyCode)).thenReturn(4.2);
@@ -397,5 +392,21 @@ class CollectionBoxServiceUnitTests {
                         .mapToDouble(d-> d).sum();
 
         assertEquals(0.0, sumBalanceCollectionBox);
+    }
+
+    @Test
+    public void transfer_Unsuccessfully_NotAssignedCollectionBox() {
+        CollectionBox collectionBox = CollectionBox.builder()
+                .uuid(UUID.randomUUID())
+                .balance(new HashMap<>())
+                .build();
+
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
+                .thenReturn(Optional.of(collectionBox));
+
+        assertThrows(
+                CollectionBoxIsNotAssigned.class,
+                () ->   collectionBoxService.transfer(collectionBox.getUuid())
+        );
     }
 }
