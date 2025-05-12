@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.wajhub.server.dto.request.PutMoneyToCollectionBoxRequest;
+import pl.wajhub.server.dto.request.PutMoneyInCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
 import pl.wajhub.server.service.CollectionBoxService;
 
@@ -67,9 +67,18 @@ public class CollectionBoxController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CollectionBoxDtoResponse> putMoney(
             @PathVariable UUID uuid,
-            @Valid @RequestBody PutMoneyToCollectionBoxRequest money
+            @Valid @RequestBody PutMoneyInCollectionBoxRequest money
             ) {
         CollectionBoxDtoResponse collectionBox = collectionBoxService.putMoney(uuid, money);
+        return new ResponseEntity<>(collectionBox, HttpStatus.OK);
+    }
+
+    @PatchMapping("collections/{uuid}/transfer")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<CollectionBoxDtoResponse> transferMoney(
+            @PathVariable UUID uuid
+    ) {
+        CollectionBoxDtoResponse collectionBox = collectionBoxService.transfer(uuid);
         return new ResponseEntity<>(collectionBox, HttpStatus.OK);
     }
 

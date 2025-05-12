@@ -38,26 +38,6 @@ class FundraisingEventControllerIntegrationTests {
     }
 
     @Test
-    public void transferMoney_SuccessfullyTransfer_StandardTransfer() throws Exception {
-        UUID eventUuid = UUID.fromString("66eaa713-c6a8-47c6-98fa-da78bfab9376");
-        UUID collectionUuid = UUID.fromString("be4c9355-bac8-4262-84f9-07cc1eb1a192");
-        FundraisingEventDtoResponse dtoResponse =
-                FundraisingEventDtoResponse.builder()
-                        .uuid(eventUuid)
-                        .name("Charity One")
-                        .currencyCode("EUR")
-                        .balance(100.0)
-                        .build();
-
-        ResultActions response =
-                mockMvc.perform(patch("/api/v1/events/"+eventUuid+"/collections/"+collectionUuid+"/transfer"));
-
-        response.andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(dtoResponse.name())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.balance", CoreMatchers.is(dtoResponse.balance())));
-    }
-
-    @Test
     public void createEvent_ThrowException_IncorrectCurrencyCode() throws Exception {
         FundraisingEventDtoRequest eventDtoRequest = FundraisingEventDtoRequest.builder()
                 .name("Charity One")
@@ -73,5 +53,4 @@ class FundraisingEventControllerIntegrationTests {
         response.andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));
     }
-
 }

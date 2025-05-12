@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.wajhub.server.dto.request.FundraisingEventDtoRequest;
-import pl.wajhub.server.dto.request.PutMoneyToCollectionBoxRequest;
+import pl.wajhub.server.dto.request.PutMoneyInCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
 import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
 import pl.wajhub.server.service.CollectionBoxService;
@@ -39,11 +39,11 @@ public class DataInit {
         collectionBoxService.register(event.uuid(), collectionBox.uuid());
         collectionBoxService.putMoney(
                 collectionBox.uuid(),
-                PutMoneyToCollectionBoxRequest.builder().currencyCode("EUR").amount(100.0).build()
+                PutMoneyInCollectionBoxRequest.builder().currencyCode("EUR").amount(100.0).build()
         );
         collectionBoxService.putMoney(
                 collectionBox.uuid(),
-                PutMoneyToCollectionBoxRequest.builder().currencyCode("USD").amount(50.2).build()
+                PutMoneyInCollectionBoxRequest.builder().currencyCode("USD").amount(50.2).build()
         );
 
         FundraisingEventDtoResponse event2 =

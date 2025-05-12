@@ -10,7 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
+import pl.wajhub.server.dto.response.FundraisingEventDtoResponse;
 import pl.wajhub.server.model.CollectionBox;
+
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -38,6 +42,23 @@ public class CollectionBoxControllerIntegrationTests {
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isAssigned", CoreMatchers.is(true)));
 
+    }
+
+    @Test
+    public void transferMoney_SuccessfullyTransfer_StandardTransfer() throws Exception {
+        UUID collectionUuid = UUID.fromString("be4c9355-bac8-4262-84f9-07cc1eb1a192");
+        CollectionBoxDtoResponse collectionBoxDtoResponse =
+                CollectionBoxDtoResponse.builder()
+                        .isAssigned(true)
+                        .isEmpty(true)
+                        .build();
+
+        ResultActions response =
+                mockMvc.perform(patch("/api/v1/collections/"+collectionUuid+"/transfer"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isEmpty", CoreMatchers.is(collectionBoxDtoResponse.isEmpty())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isAssigned", CoreMatchers.is(collectionBoxDtoResponse.isAssigned())));
     }
 
 }

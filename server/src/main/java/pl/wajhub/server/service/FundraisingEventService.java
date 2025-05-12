@@ -25,19 +25,13 @@ import java.util.UUID;
 public class FundraisingEventService {
 
     private final FundraisingEventRepository eventRepository;
-    private final CollectionBoxRepository collectionBoxRepository;
-    private final ExchangeService exchangeService;
     private final FundraisingEventMapper mapper;
 
     @Autowired
     public FundraisingEventService(
             FundraisingEventRepository eventRepository,
-            CollectionBoxRepository collectionBoxRepository,
-            ExchangeService exchangeService,
             @Qualifier("fundraisingEventMapperImpl") FundraisingEventMapper mapper) {
         this.eventRepository = eventRepository;
-        this.collectionBoxRepository = collectionBoxRepository;
-        this.exchangeService = exchangeService;
         this.mapper = mapper;
     }
 
@@ -72,31 +66,4 @@ public class FundraisingEventService {
         return mapper.eventToEventDtoResponse(eventSaved);
     }
 
-    @Transactional
-    public FundraisingEventDtoResponse transfer(UUID eventUuid, UUID collectionUuid) {
-        var event = eventRepository.findById(eventUuid)
-                .orElseThrow(() -> new EventNotFoundException(eventUuid));
-        var collectionBox = collectionBoxRepository.findById(collectionUuid)
-                .orElseThrow(() -> new CollectionBoxNotFoundException(collectionUuid));
-
-        collectionBox.getBalance()
-            .forEach((currency, balance )->
-                    handleTransferMoney(currency, balance, event)
-            );
-        collectionBox.setBalance(new HashMap<>());
-        return mapper.eventToEventDtoResponse(event);
-    }
-
-    private void handleTransferMoney(String currencyCode, Double balance, FundraisingEvent event) {
-        if(Objects.equals(currencyCode, event.getCurrencyCode())) {
-            event.setBalance(event.getBalance() + balance);
-            return ;
-        }
-        try {
-            Double rate = exchangeService.getRate(currencyCode, event.getCurrencyCode());
-            event.setBalance(event.getBalance()+rate*balance);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

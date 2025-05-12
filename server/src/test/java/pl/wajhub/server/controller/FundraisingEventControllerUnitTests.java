@@ -2,7 +2,6 @@ package pl.wajhub.server.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -106,26 +105,5 @@ class FundraisingEventControllerUnitTests {
                         .contentType("application/json")
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    public void transferMoney_SuccessfullyTransfer_StandardTransfer() throws Exception {
-        UUID eventUuid = UUID.randomUUID();
-        UUID collectionUuid = UUID.randomUUID();
-        FundraisingEventDtoResponse dtoResponse =
-                FundraisingEventDtoResponse.builder()
-                        .uuid(eventUuid)
-                        .name("Charity One")
-                        .currencyCode("PLN")
-                        .balance(100.0)
-                        .build();
-        when(eventService.transfer(eventUuid, collectionUuid)).thenReturn(dtoResponse);
-
-        ResultActions response =
-                mockMvc.perform(patch("/api/v1/events/"+eventUuid+"/collections/"+collectionUuid+"/transfer"));
-
-        response.andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(dtoResponse.name())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.balance", CoreMatchers.is(dtoResponse.balance())));
     }
 }

@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.wajhub.server.dto.request.PutMoneyToCollectionBoxRequest;
+import pl.wajhub.server.dto.request.PutMoneyInCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
 import pl.wajhub.server.exception.*;
 import pl.wajhub.server.mapper.CollectionBoxMapper;
@@ -16,7 +16,9 @@ import pl.wajhub.server.model.FundraisingEvent;
 import pl.wajhub.server.repository.CollectionBoxRepository;
 import pl.wajhub.server.repository.FundraisingEventRepository;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,15 +33,19 @@ class CollectionBoxServiceUnitTests {
     private CollectionBoxRepository collectionBoxRepository;
     @Mock
     private  CollectionBoxMapper collectionBoxMapper;
+    @Mock
+    private ExchangeService exchangeService;
     @InjectMocks
     private CollectionBoxService collectionBoxService;
 
     private FundraisingEvent event;
+    private String eventCurrencyCode;
     private CollectionBox collectionBox;
     private CollectionBoxDtoResponse collectionBoxDtoResponse;
 
     @BeforeEach
     public void init(){
+        eventCurrencyCode = "PLN";
         event = FundraisingEvent.builder()
                     .uuid(UUID.randomUUID())
                     .name("Charity One")
@@ -179,11 +185,11 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    public void transfer_SuccessfullyPutMoney_NewCurrencyInBox(){
+    public void putMoney_SuccessfullyPutMoney_NewCurrencyInBox(){
         collectionBox.setEvent(event);
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
-        PutMoneyToCollectionBoxRequest request =
-                PutMoneyToCollectionBoxRequest.builder()
+        PutMoneyInCollectionBoxRequest request =
+                PutMoneyInCollectionBoxRequest.builder()
                         .currencyCode("PLN")
                         .amount(10.0)
                     .build();
@@ -197,7 +203,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    public void transfer_SuccessfullyPutMoney_ExistingCurrencyInBox() {
+    public void putMoney_SuccessfullyPutMoney_ExistingCurrencyInBox() {
         Double amountInBoxBeforeTransfer = 20.0;
         String currencyCodeInBox = "PLN";
         collectionBox.setEvent(event);
@@ -205,8 +211,8 @@ class CollectionBoxServiceUnitTests {
             put(currencyCodeInBox, amountInBoxBeforeTransfer);
         }});
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
-        PutMoneyToCollectionBoxRequest request =
-                PutMoneyToCollectionBoxRequest.builder()
+        PutMoneyInCollectionBoxRequest request =
+                PutMoneyInCollectionBoxRequest.builder()
                         .currencyCode(currencyCodeInBox)
                         .amount(10.0)
                         .build();
@@ -220,7 +226,7 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    public void transfer_SuccessfullyPutMoney_MoreCurrenciesInBox(){
+    public void putMoney_SuccessfullyPutMoney_MoreCurrenciesInBox(){
         Double amountInBoxBeforeTransfer = 20.0;
         String currencyCodeInBox = "PLN";
         collectionBox.setEvent(event);
@@ -229,8 +235,8 @@ class CollectionBoxServiceUnitTests {
             put(currencyCodeInBox, amountInBoxBeforeTransfer);
         }});
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
-        PutMoneyToCollectionBoxRequest request =
-                PutMoneyToCollectionBoxRequest.builder()
+        PutMoneyInCollectionBoxRequest request =
+                PutMoneyInCollectionBoxRequest.builder()
                         .currencyCode(currencyCodeInBox)
                         .amount(10.0)
                         .build();
@@ -244,10 +250,10 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    public void transfer_UnsuccessfullyPutMoney_NegativeAmountOfMoney(){
+    public void putMoney_UnsuccessfullyPutMoney_NegativeAmountOfMoney(){
         collectionBox.setEvent(event);
-        PutMoneyToCollectionBoxRequest request =
-                PutMoneyToCollectionBoxRequest.builder()
+        PutMoneyInCollectionBoxRequest request =
+                PutMoneyInCollectionBoxRequest.builder()
                         .currencyCode("PLN")
                         .amount(-10.0)
                         .build();
@@ -259,10 +265,10 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    public void transfer_UnsuccessfullyPutMoney_ZeroAmount(){
+    public void putMoney_UnsuccessfullyPutMoney_ZeroAmount(){
         collectionBox.setEvent(event);
-        PutMoneyToCollectionBoxRequest request =
-                PutMoneyToCollectionBoxRequest.builder()
+        PutMoneyInCollectionBoxRequest request =
+                PutMoneyInCollectionBoxRequest.builder()
                         .currencyCode("PLN")
                         .amount(0.0)
                         .build();
@@ -274,9 +280,9 @@ class CollectionBoxServiceUnitTests {
     }
 
     @Test
-    public void transfer_UnsuccessfullyPutMoney_NotAssignedEvent(){
-        PutMoneyToCollectionBoxRequest request =
-                PutMoneyToCollectionBoxRequest.builder()
+    public void putMoney_UnsuccessfullyPutMoney_NotAssignedEvent(){
+        PutMoneyInCollectionBoxRequest request =
+                PutMoneyInCollectionBoxRequest.builder()
                         .currencyCode("PLN")
                         .amount(10.0)
                         .build();
@@ -286,5 +292,110 @@ class CollectionBoxServiceUnitTests {
                 CollectionBoxIsNotAssigned.class,
                 () -> collectionBoxService.putMoney(collectionBox.getUuid(), request)
         );
+    }
+
+    @Test
+    public void transfer_SuccessfullyTransferred_TheSameCurrency(){
+        Double amount = 100.0;
+        Map<String, Double> balanceInCollectionBox = new HashMap<>(){
+            {put(eventCurrencyCode,amount);}
+        };
+        CollectionBox collectionBox = CollectionBox.builder()
+                .uuid(UUID.randomUUID())
+                .event(event)
+                .balance(balanceInCollectionBox)
+                .build();
+        Mockito.when(eventRepository.findById(event.getUuid()))
+                .thenReturn(Optional.of(event));
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
+                .thenReturn(Optional.of(collectionBox));
+
+        collectionBoxService.transfer(collectionBox.getUuid());
+
+        assertEquals(amount, event.getBalance());
+    }
+
+    @Test
+    public void transfer_SuccessfullyTransferred_DifferentCurrency() throws IOException {
+        double startAmount = 1.1;
+        double amount = 250.0;
+        double standardRate = 4.2;
+        String destinationCurrencyCode = eventCurrencyCode;
+        String sourceCurrencyCode = "EUR";
+
+        event.setBalance(startAmount);
+        CollectionBox collectionBox = CollectionBox.builder()
+                .uuid(UUID.randomUUID())
+                .balance(new HashMap<>() {{
+                    put(sourceCurrencyCode,amount);
+                }})
+                .build();
+
+        Mockito.when(eventRepository.findById(event.getUuid()))
+                .thenReturn(Optional.of(event));
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
+                .thenReturn(Optional.of(collectionBox));
+        Mockito.when(exchangeService.getRate(sourceCurrencyCode, destinationCurrencyCode)).thenReturn(standardRate);
+
+        collectionBoxService.transfer(collectionBox.getUuid());
+
+        assertEquals(startAmount+amount*standardRate, event.getBalance());
+    }
+
+    @Test
+    public void transfer_SuccessfullyTransferred_DifferentCurrencies() throws IOException {
+        double amount = 250.0;
+        double startAmount = 10.0;
+        double standardRate = 4.2;
+        String destinationCurrencyCode = eventCurrencyCode;
+        String sourceCurrencyCode = "EUR";
+
+        event.setBalance(startAmount);
+        CollectionBox collectionBox = CollectionBox.builder()
+                .uuid(UUID.randomUUID())
+                .balance(new HashMap<>() {{
+                    put(sourceCurrencyCode,amount);
+                    put(destinationCurrencyCode, amount);
+                }})
+                .build();
+
+        Mockito.when(eventRepository.findById(event.getUuid()))
+                .thenReturn(Optional.of(event));
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
+                .thenReturn(Optional.of(collectionBox));
+        Mockito.when(exchangeService.getRate(sourceCurrencyCode, destinationCurrencyCode)).thenReturn(standardRate);
+
+        collectionBoxService.transfer(collectionBox.getUuid());
+
+        assertEquals(startAmount+amount+amount*standardRate, event.getBalance());
+    }
+
+    @Test
+    public void transfer_SuccessfullyEmptiedCollectionsBox_DifferentCurrency() throws IOException {
+        double amount = 250.0;
+        String destinationCurrencyCode = eventCurrencyCode;
+        String sourceCurrencyCode = "EUR";
+
+        CollectionBox collectionBox = CollectionBox.builder()
+                .uuid(UUID.randomUUID())
+                .balance(new HashMap<>() {{
+                    put(sourceCurrencyCode,amount);
+                    put(destinationCurrencyCode, amount);
+                }})
+                .build();
+
+        Mockito.when(eventRepository.findById(event.getUuid()))
+                .thenReturn(Optional.of(event));
+        Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid()))
+                .thenReturn(Optional.of(collectionBox));
+        Mockito.when(exchangeService.getRate(sourceCurrencyCode, destinationCurrencyCode)).thenReturn(4.2);
+
+        collectionBoxService.transfer(collectionBox.getUuid());
+        double sumBalanceCollectionBox =
+                collectionBox.getBalance().values()
+                        .stream()
+                        .mapToDouble(d-> d).sum();
+
+        assertEquals(0.0, sumBalanceCollectionBox);
     }
 }

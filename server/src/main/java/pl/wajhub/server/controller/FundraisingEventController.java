@@ -52,15 +52,4 @@ public class FundraisingEventController {
         FundraisingEventDtoResponse event = eventService.create(eventDtoRequest, uuid);
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
-
-    @PatchMapping("events/{eventUuid}/collections/{collectionUuid}/transfer")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<FundraisingEventDtoResponse> transferMoney(
-            @PathVariable UUID eventUuid,
-            @PathVariable UUID collectionUuid
-            ) {
-        FundraisingEventDtoResponse event = eventService.transfer(eventUuid, collectionUuid);
-        return new ResponseEntity<>(event, HttpStatus.OK);
-    }
-
 }

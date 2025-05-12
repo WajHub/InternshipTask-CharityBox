@@ -12,9 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import pl.wajhub.server.dto.request.PutMoneyToCollectionBoxRequest;
+import pl.wajhub.server.dto.request.PutMoneyInCollectionBoxRequest;
 import pl.wajhub.server.dto.response.CollectionBoxDtoResponse;
 import pl.wajhub.server.service.CollectionBoxService;
 
@@ -82,7 +83,7 @@ public class CollectionBoxControllerUnitTests {
                 .isEmpty(false)
                 .isAssigned(true)
                 .build();
-        PutMoneyToCollectionBoxRequest request = PutMoneyToCollectionBoxRequest.builder()
+        PutMoneyInCollectionBoxRequest request = PutMoneyInCollectionBoxRequest.builder()
                 .currencyCode("PLN")
                 .amount(10.0)
                 .build();
@@ -106,7 +107,7 @@ public class CollectionBoxControllerUnitTests {
                 .isEmpty(false)
                 .isAssigned(true)
                 .build();
-        PutMoneyToCollectionBoxRequest request = PutMoneyToCollectionBoxRequest.builder()
+        PutMoneyInCollectionBoxRequest request = PutMoneyInCollectionBoxRequest.builder()
                 .currencyCode("dfgsdfgsdfg")
                 .amount(10.0)
                 .build();
@@ -122,4 +123,22 @@ public class CollectionBoxControllerUnitTests {
                 .andExpect(result -> assertInstanceOf(MethodArgumentNotValidException.class, result.getResolvedException()));
     }
 
+    @Test
+    public void transferMoney_SuccessfullyTransfer_StandardTransfer() throws Exception {
+        UUID collectionUuid = UUID.randomUUID();
+        CollectionBoxDtoResponse collectionBoxDtoResponse =
+                CollectionBoxDtoResponse.builder()
+                        .isEmpty(true)
+                        .isAssigned(true)
+                        .build();
+
+        when(collectionBoxService.transfer(collectionUuid)).thenReturn(collectionBoxDtoResponse);
+
+        ResultActions response =
+                mockMvc.perform(patch("/api/v1/collections/"+collectionUuid+"/transfer"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isAssigned", CoreMatchers.is(collectionBoxDtoResponse.isAssigned())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isEmpty", CoreMatchers.is(collectionBoxDtoResponse.isEmpty())));
+    }
 }
