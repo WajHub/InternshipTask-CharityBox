@@ -6,7 +6,7 @@ import pl.wajhub.server.validation.CurrencyCodeConstraint;
 
 @Builder
 public record PutMoneyInCollectionBoxRequest(
-        @Schema(name = "CurrencyCode", example = "PLN", description = "Currency code according to ISO 4217")
+        @Schema(name = "currencyCode", example = "PLN", description = "Currency code according to ISO 4217")
         @CurrencyCodeConstraint String currencyCode,
         Double amount) {
 }
