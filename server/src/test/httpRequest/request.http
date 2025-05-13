@@ -1,12 +1,50 @@
-### GET all events
+#Examples queries from README.md --------------------------------
+### Get all events
 GET http://localhost:8080/api/v1/events
 
-### GET all collections
+### Create new event
+PUT http://localhost:8080/api/v1/events/f9c6b673-c001-4cfe-981e-0eb58c219f6f
+Content-Type: application/json
+
+{
+  "name": "American Red Cross",
+  "currencyCode": "USD"
+}
+
+### Get all collections
 GET http://localhost:8080/api/v1/collections
+
+### Create new collection
+PUT http://localhost:8080/api/v1/collections/69b073da-efbb-403c-bbcd-fbc3aaf7a4d9
+
+### Put money in collection box
+PATCH http://localhost:8080/api/v1/collections/be4c9355-bac8-4262-84f9-07cc1eb1a192
+Content-Type: application/json
+
+{
+  "currencyCode": "USD",
+  "amount": 125.50
+}
+
+### Register collection to event
+PATCH http://localhost:8080/api/v1/events/66eaa713-c6a8-47c6-98fa-da78bfab9376/collections/e329a2ca-d512-422d-a21c-9bbcbe034ef9/register
+
+### Unregister collection box
+DELETE http://localhost:8080/api/v1/collections/e329a2ca-d512-422d-a21c-9bbcbe034ef9
 
 ### Transfer from CollectionBox to FundraisingEvent
 PATCH http://localhost:8080/api/v1/collections/be4c9355-bac8-4262-84f9-07cc1eb1a192/transfer
 
+# More examples --------------------------------------------
+
+### Create Event
+POST http://localhost:8080/api/v1/events
+Content-Type: application/json
+
+{
+  "currencyCode": "EUR",
+  "name": "Charity Two"
+}
 
 ### Put money in  CollectionBox
 PATCH http://localhost:8080/api/v1/collections/be4c9355-bac8-4262-84f9-07cc1eb1a192
@@ -17,11 +55,36 @@ Content-Type: application/json
   "currencyCode": "EUR"
 }
 
-### Create Event
-POST http://localhost:8080/api/v1/events
+### Put money in collection box
+PATCH http://localhost:8080/api/v1/collections/e329a2ca-d512-422d-a21c-9bbcbe034ef9
 Content-Type: application/json
 
 {
-  "currencyCode": "EUR",
-  "name": "Charity Two"
+  "currencyCode": "PLN",
+  "amount": 15.50
 }
+
+### Put money in collection box
+PATCH http://localhost:8080/api/v1/collections/cfa73bc4-5196-4a67-bec8-20181415f21b
+Content-Type: application/json
+
+{
+  "currencyCode": "USD",
+  "amount": 145.50
+}
+
+### Put money in collection box
+PATCH http://localhost:8080/api/v1/collections/cfa73bc4-5196-4a67-bec8-20181415f21b
+Content-Type: application/json
+
+{
+  "currencyCode": "PLN",
+  "amount": 345.50
+}
+
+### Transfer from CollectionBox to FundraisingEvent
+PATCH http://localhost:8080/api/v1/collections/cfa73bc4-5196-4a67-bec8-20181415f21b/transfer
+
+### Transfer from CollectionBox to FundraisingEvent
+PATCH http://localhost:8080/api/v1/collections/e329a2ca-d512-422d-a21c-9bbcbe034ef9/transfer
+
