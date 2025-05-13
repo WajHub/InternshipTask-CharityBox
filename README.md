@@ -10,7 +10,7 @@ For testing, I used **JUnit 5** and **Mockito** for Unit Tests and **MockMvc** f
 - [Schema Database](#Schema-Database)
 
 
-## How to run
+## How to run [`⬆️`](#InternshipTask-CharityBox)
 
 1. **Create .env file in the `server/src/main/resources/`  and complete content**
 
@@ -44,7 +44,7 @@ For testing, I used **JUnit 5** and **Mockito** for Unit Tests and **MockMvc** f
 
 The Swagger UI will be available at: [`http://localhost:8080/swagger-ui/index.html`](http://localhost:8080/swagger-ui/index.html)
 
-## How to run tests
+## How to run tests [`⬆️`](#InternshipTask-CharityBox)
 
 1. **Navigate to the main directory**
 
@@ -68,15 +68,20 @@ The Swagger UI will be available at: [`http://localhost:8080/swagger-ui/index.ht
 
     ```
    
-Tests are located in [`tests`](https://github.com/WajHub/InternshipTask-CharityBox/tree/main/server/src/test).
+Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBox/tree/main/server/src/test).
 
-## Endpoints
+## Endpoints [`⬆️`](#InternshipTask-CharityBox)
 
    - `GET /api/v1/events` - **Display a financial report with all fundraising events and the sum of their accounts.**
 
-      <details>
+     <details>
          <summary>Example Query
-         </summary>...
+         </summary>
+     
+     ```bash
+     curl http://localhost:8080/api/v1/events
+     ```
+     
       </details>
      
       <details>
@@ -88,7 +93,13 @@ Tests are located in [`tests`](https://github.com/WajHub/InternshipTask-CharityB
 
       <details>
          <summary>Example Query
-         </summary>...
+         </summary>
+
+     ```bash
+     curl -X POST http://localhost:8080/api/v1/events \
+      -H "Content-Type: application/json" \
+     -d '{"name": "American Red Cross", "currencyCode": "USD"}'
+     ```
       </details>
 
       <details>
@@ -100,7 +111,11 @@ Tests are located in [`tests`](https://github.com/WajHub/InternshipTask-CharityB
 
       <details>
          <summary>Example Query
-         </summary>...
+         </summary>
+     
+     ```bash
+     curl -X PUT http://localhost:8080/api/v1/events/f9c6b673-c001-4cfe-981e-0eb58c219f6f
+     ```
       </details>
 
       <details>
@@ -113,7 +128,12 @@ Tests are located in [`tests`](https://github.com/WajHub/InternshipTask-CharityB
 
       <details>
          <summary>Example Query
-         </summary>...
+         </summary>
+
+     ```bash
+     curl http://localhost:8080/api/v1/collections
+     ```
+
       </details>
 
       <details>
@@ -125,7 +145,12 @@ Tests are located in [`tests`](https://github.com/WajHub/InternshipTask-CharityB
 
       <details>
          <summary>Example Query
-         </summary>...
+         </summary>
+
+     ```bash
+     curl -X POST http://localhost:8080/api/v1/collections
+     ```
+
       </details>
 
       <details>
@@ -137,7 +162,12 @@ Tests are located in [`tests`](https://github.com/WajHub/InternshipTask-CharityB
 
      <details>
         <summary>Example Query
-        </summary>...
+        </summary>
+
+     ```bash
+     curl -X PUT http://localhost:8080/api/v1/collections/69b073da-efbb-403c-bbcd-fbc3aaf7a4d9
+     ```
+     
      </details>
 
      <details>
@@ -149,7 +179,14 @@ Tests are located in [`tests`](https://github.com/WajHub/InternshipTask-CharityB
 
      <details>
         <summary>Example Query
-        </summary>...
+        </summary>
+
+      ```bash
+     curl -X PATCH http://localhost:8080/api/v1/collections/be4c9355-bac8-4262-84f9-07cc1eb1a192 \
+      -H "Content-Type: application/json" \
+     -d '{"currencyCode": "USD", "amount": 125.50}'
+     ```
+
      </details>
 
      <details>
@@ -160,41 +197,56 @@ Tests are located in [`tests`](https://github.com/WajHub/InternshipTask-CharityB
    - `PATCH /api/v1/events/{eventUuid}/collections/{collectionUuid}/register` - **Assign the collection box to an existing fundraising event.**
 
      <details>
-        <summary>Example Query
-        </summary>...
+        <summary>Example Query</summary>
+
+      ```bash
+     curl -X PATCH http://localhost:8080/api/v1/events/66eaa713-c6a8-47c6-98fa-da78bfab9376/collections/e329a2ca-d512-422d-a21c-9bbcbe034ef9/register
+     ```
+
      </details>
 
      <details>
-        <summary>Example Response
-        </summary>...
+        <summary>Example Response</summary>
+     ...
      </details>
 
    - `DELETE /api/v1/collections/{uuid}` - **Unregister (remove) a collection box (e.g. in case it was damaged or stolen).**
 
      <details>
-        <summary>Example Query
-        </summary>...
+        <summary>Example Query</summary>
+     
+     ```bash
+     curl -X DELETE http://localhost:8080/api/v1/collections/e963b0f2c-1baf-4d41-b277-f4ab2c2e3875
+     ```
+
      </details>
 
      <details>
-        <summary>Example Response
-        </summary>...
+        <summary>Example Response</summary>
+     
+     `HTTP/1.1 204 No Content`
+     
      </details>
 
    - `PATCH /api/v1/collections/{uuid}/transfer` - **Empty the collection box i.e. “transfer” money from the box to the fundraising event’s account.**
 
      <details>
-        <summary>Example Query
-        </summary>...
+        <summary>Example Query</summary>
+
+     ```bash
+     curl -X PATCH http://localhost:8080/api/v1/collections/be4c9355-bac8-4262-84f9-07cc1eb1a192/transfer
+     ```
+
      </details>
 
      <details>
-        <summary>Example Response
-        </summary>...
+        <summary>Example Response</summary>
+     ...
      </details>
 
+More examples of queries you can find [`here`](https://github.com/WajHub/InternshipTask-CharityBox/blob/main/server/src/test/httpRequest/request.http).
 
-## Schema Database
+## Schema Database [`⬆️`](#InternshipTask-CharityBox)
 
 ```mermaid
   erDiagram
