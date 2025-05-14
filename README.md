@@ -92,24 +92,24 @@ Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBo
      `HTTP/1.1 200`
      ```json
      [
-     {
-     "uuid": "66eaa713-c6a8-47c6-98fa-da78bfab9376",
-     "name": "Charity One",
-     "currencyCode": "EUR",
-     "balance": 261.76733
-     },
-     {
-     "uuid": "56eb1354-a780-446f-beb9-705602f25104",
-     "name": "All for hope",
-     "currencyCode": "GBP",
-     "balance": 0.0
-     },
-     {
-     "uuid": "06c763c3-23c7-4d72-b46c-3d59c564656c",
-     "name": "Wielka Orkiestra Świątecznej Pomocy",
-     "currencyCode": "PLN",
-     "balance": 901.1936
-     }
+          {
+               "uuid": "66eaa713-c6a8-47c6-98fa-da78bfab9376",
+               "name": "Charity One",
+               "currencyCode": "EUR",
+               "balance": 261.76733
+          },
+          {
+               "uuid": "56eb1354-a780-446f-beb9-705602f25104",
+               "name": "All for hope",
+               "currencyCode": "GBP",
+               "balance": 0.0
+          },
+          {
+               "uuid": "06c763c3-23c7-4d72-b46c-3d59c564656c",
+               "name": "Wielka Orkiestra Świątecznej Pomocy",
+               "currencyCode": "PLN",
+               "balance": 901.1936
+          }
      ]
      ```
       </details>
@@ -134,10 +134,10 @@ Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBo
      `HTTP/1.1 201`
      ```json
      {
-     "uuid": "546f30d1-ff13-43aa-94e3-d7666f3798d2",
-     "name": "American Red Cross",
-     "currencyCode": "USD",
-     "balance": 0.0
+          "uuid": "546f30d1-ff13-43aa-94e3-d7666f3798d2",
+          "name": "American Red Cross",
+          "currencyCode": "USD",
+          "balance": 0.0
      }
      ```
       </details>
@@ -162,10 +162,10 @@ Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBo
      `HTTP/1.1 201`
      ```json
      {
-     "uuid": "f9c6b673-c001-4cfe-981e-0eb58c219f6f",
-     "name": "American Red Cross",
-     "currencyCode": "USD",
-     "balance": 0.0
+          "uuid": "f9c6b673-c001-4cfe-981e-0eb58c219f6f",
+          "name": "American Red Cross",
+          "currencyCode": "USD",
+          "balance": 0.0
      }
      ```
       </details>
@@ -189,21 +189,21 @@ Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBo
      `HTTP/1.1 200 `
      ```json
      [
-     {
-     "uuid": "be4c9355-bac8-4262-84f9-07cc1eb1a192",
-     "isAssigned": true,
-     "isEmpty": false
-     },
-     {
-     "uuid": "5a65a78b-e765-4b26-92ea-4903124ae19c",
-     "isAssigned": false,
-     "isEmpty": true
-     },
-     {
-     "uuid": "cfa73bc4-5196-4a67-bec8-20181415f21b",
-     "isAssigned": true,
-     "isEmpty": true
-     }
+          {
+               "uuid": "be4c9355-bac8-4262-84f9-07cc1eb1a192",
+               "isAssigned": true,
+               "isEmpty": false
+          },
+          {
+               "uuid": "5a65a78b-e765-4b26-92ea-4903124ae19c",
+               "isAssigned": false,
+               "isEmpty": true
+          },
+          {
+               "uuid": "cfa73bc4-5196-4a67-bec8-20181415f21b",
+               "isAssigned": true,
+               "isEmpty": true
+          }
      ]
      ```
       </details>
@@ -226,9 +226,9 @@ Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBo
      `HTTP/1.1 201`
      ```json
      {
-     "uuid": "69b073da-efbb-403c-bbcd-fbc3aaf7a4d9",
-     "isAssigned": false,
-     "isEmpty": true
+          "uuid": "69b073da-efbb-403c-bbcd-fbc3aaf7a4d9",
+          "isAssigned": false,
+          "isEmpty": true
      }
      ```
       </details>
@@ -251,9 +251,9 @@ Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBo
      `HTTP/1.1 201`
      ```json
      {
-     "uuid": "69b073da-efbb-403c-bbcd-fbc3aaf7a4d9",
-     "isAssigned": false,
-     "isEmpty": true
+          "uuid": "69b073da-efbb-403c-bbcd-fbc3aaf7a4d9",
+          "isAssigned": false,
+          "isEmpty": true
      }
      ```
      </details>
@@ -278,9 +278,9 @@ Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBo
      `HTTP/1.1 200`
      ```json
      {
-     "uuid": "be4c9355-bac8-4262-84f9-07cc1eb1a192",
-     "isAssigned": true,
-     "isEmpty": false
+          "uuid": "be4c9355-bac8-4262-84f9-07cc1eb1a192",
+          "isAssigned": true,
+          "isEmpty": false
      }
      ```
      </details>
@@ -303,9 +303,9 @@ Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBo
      `HTTP/1.1 200`
      ```json
      {
-     "uuid": "e329a2ca-d512-422d-a21c-9bbcbe034ef9",
-     "isAssigned": true,
-     "isEmpty": true
+          "uuid": "e329a2ca-d512-422d-a21c-9bbcbe034ef9",
+          "isAssigned": true,
+          "isEmpty": true
      }
      ```
      </details>
@@ -346,9 +346,9 @@ Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBo
      `HTTP/1.1 200`
      ```json
      {
-     "uuid": "be4c9355-bac8-4262-84f9-07cc1eb1a192",
-     "isAssigned": true,
-     "isEmpty": true
+          "uuid": "be4c9355-bac8-4262-84f9-07cc1eb1a192",
+          "isAssigned": true,
+          "isEmpty": true
      }
      ```
      </details>
