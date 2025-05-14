@@ -82,7 +82,7 @@ public class DataInit {
         CollectionBoxDtoResponse collectionBox3_1 = collectionBoxService.
                 create(UUID.fromString("cfa73bc4-5196-4a67-bec8-20181415f21b"));
 
-        CollectionBoxDtoResponse collectionBox4 = collectionBoxService.
+        CollectionBoxDtoResponse collectionBox4_ = collectionBoxService.
                 create(UUID.fromString("e329a2ca-d512-422d-a21c-9bbcbe034ef9"));
 
         collectionBoxService.register(event2.uuid(), collectionBox2_1.uuid());
@@ -117,5 +117,8 @@ public class DataInit {
                 PutMoneyInCollectionBoxRequest.builder().currencyCode("AUD").amount(1.11).build()
         );
 
+        CollectionBoxDtoResponse collectionBox_empty_registered = collectionBoxService.
+                create(UUID.fromString("51ee5e36-8776-4c24-8815-1b7fc0dc1267"));
+        collectionBoxService.register(event.uuid(), collectionBox_empty_registered.uuid());
     }
 }
