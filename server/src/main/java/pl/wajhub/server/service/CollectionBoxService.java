@@ -94,7 +94,7 @@ public class CollectionBoxService {
         CollectionBox collectionBox = collectionBoxRepository.findById(uuid)
                 .orElseThrow(() -> new CollectionBoxNotFoundException(uuid));
         if(collectionBox.getEvent() == null )
-            throw new CollectionBoxIsNotAssigned("You can't put money in not assigned Collection Box!");
+            throw new CollectionBoxIsNotRegistered("You can't put money in not assigned Collection Box!");
         collectionBox.transfer(money.currencyCode(), money.amount());
         var collectionBoxSaved = collectionBoxRepository.save(collectionBox);
         return collectionBoxMapper.collectionBoxToCollectionBoxDtoResponse(collectionBoxSaved);
@@ -106,7 +106,7 @@ public class CollectionBoxService {
                 .orElseThrow(() -> new CollectionBoxNotFoundException(collectionUuid));
         var event = collectionBox.getEvent() ;
         if(collectionBox.getEvent()==null)
-            throw new CollectionBoxIsNotAssigned("You can't transfer money from not assigned collection box!");
+            throw new CollectionBoxIsNotRegistered("You can't transfer money from not assigned collection box!");
         collectionBox.getBalance()
                 .forEach((currency, balance )->
                         handleTransferMoney(currency, balance, event)
