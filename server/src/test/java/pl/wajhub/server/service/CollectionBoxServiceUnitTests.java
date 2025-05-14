@@ -271,7 +271,7 @@ class CollectionBoxServiceUnitTests {
         Mockito.when(collectionBoxRepository.findById(collectionBox.getUuid())).thenReturn(Optional.of(collectionBox));
 
         assertThrows(
-                CollectionBoxIsNotAssigned.class,
+                CollectionBoxIsNotRegistered.class,
                 () -> collectionBoxService.putMoney(collectionBox.getUuid(), request)
         );
     }
@@ -387,7 +387,7 @@ class CollectionBoxServiceUnitTests {
                 .thenReturn(Optional.of(collectionBox));
 
         assertThrows(
-                CollectionBoxIsNotAssigned.class,
+                CollectionBoxIsNotRegistered.class,
                 () ->   collectionBoxService.transfer(collectionBox.getUuid())
         );
     }
