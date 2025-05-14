@@ -65,7 +65,11 @@ The Swagger UI will be available at: [`http://localhost:8080/swagger-ui/index.ht
    - Only integration tests
    ```bash
     ./mvnw -Dtest='*IntegrationTests' test
+    ```
 
+     - Only e2e tests
+   ```bash
+    ./mvnw -Dtest='*EndToEndTests' test
     ```
    
 Tests are located in [`here`](https://github.com/WajHub/InternshipTask-CharityBox/tree/main/server/src/test).
