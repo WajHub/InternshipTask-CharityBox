@@ -36,8 +36,8 @@ public class AppExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(CollectionBoxIsNotAssigned.class)
-    public ResponseEntity<String> exceptionHandler(CollectionBoxIsNotAssigned ex) {
+    @ExceptionHandler(CollectionBoxIsNotRegistered.class)
+    public ResponseEntity<String> exceptionHandler(CollectionBoxIsNotRegistered ex) {
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 

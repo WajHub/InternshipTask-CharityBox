@@ -1,7 +1,7 @@
 package pl.wajhub.server.exception;
 
-public class CollectionBoxIsNotAssigned extends RuntimeException {
-    public CollectionBoxIsNotAssigned(String message) {
+public class CollectionBoxIsNotRegistered extends RuntimeException {
+    public CollectionBoxIsNotRegistered(String message) {
         super(message);
     }
 }
